@@ -8,6 +8,18 @@
 package com.glTron;
 
 public final class R {
+    public static final class array {
+        public static final int arenaEntries=0x7f050005;
+        public static final int arenaValues=0x7f050004;
+        public static final int bikeArray=0x7f050000;
+        public static final int cameraEntries=0x7f050002;
+        public static final int cameraValues=0x7f050003;
+        public static final int gameSpeedEntries=0x7f050008;
+        public static final int gameSpeedValues=0x7f050009;
+        public static final int playerNumEntries=0x7f050006;
+        public static final int playerNumValues=0x7f050007;
+        public static final int playerValues=0x7f050001;
+    }
     public static final class attr {
     }
     public static final class drawable {
@@ -31,10 +43,11 @@ public final class R {
         public static final int xenotron1=0x7f020011;
     }
     public static final class id {
-        public static final int adView=0x7f060000;
+        public static final int adView=0x7f070000;
     }
     public static final class layout {
         public static final int main=0x7f030000;
+        public static final int preferences=0x7f030001;
     }
     public static final class raw {
         public static final int game_crash=0x7f040000;
@@ -45,7 +58,8 @@ public final class R {
         public static final int song_revenge_of_cats=0x7f040005;
     }
     public static final class string {
-        public static final int app_name=0x7f050001;
-        public static final int hello=0x7f050000;
+        public static final int app_name=0x7f060001;
+        public static final int hello=0x7f060000;
+        public static final int preferences_title=0x7f060002;
     }
 }

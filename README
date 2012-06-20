@@ -23,6 +23,10 @@ LICENSE
 
 As this code was derived from a GPL project all code thus provided remains under the GPL and can be found on github under the android-gltron repository.
 
+http://www.gnu.org/licenses/old-licenses/gpl-1.0.html
+
+Note that the GPL means you have to contribute changes back to the community!
+
 TO DO LIST
 ==========
 
@@ -36,7 +40,7 @@ As this was a learning experiance this is not a faitful port missing features ar
 6) 2d Map
 7) Multiplayer (alas i only have one android device)
 8) Loadable artpacks (fixed to the default)
-9) Any user settings.. (e.g. fixed to HARD AI)
+9) Any user settings.. (e.g. fixed to HARD AI) (Now done in 1.1)
 10) 3D sound (only your own bike makes engine noise and no sounds are directional)
 
 Probably a few other things ive missed.

@@ -1,3 +1,29 @@
+/*
+ * Copyright © 2012 Iain Churcher
+ *
+ * Based on GLtron by Andreas Umbach (www.gltron.org)
+ * 
+ * Contributed to by
+ *   Noah NZM TECH
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 1, or (at your option)
+ * any later version; provided that the above copyright notice appear 
+ * in all copies and that both that copyright notice and this permission 
+ * notice appear in supporting documentation
+ * 
+ * http://www.gnu.org/licenses/old-licenses/gpl-1.0.html
+ * 
+ * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+ * EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ * OF THIS SOFTWARE.
+ */
+
 package com.glTron.Game;
 
 import java.nio.FloatBuffer;
@@ -23,7 +49,9 @@ public class Camera {
 	
 	private static final float CAM_CIRCLE_DIST = 17.0f;
 	private static final float CAM_FOLLOW_DIST = 18.0f;
-//	private static final float CAM_FOLLOW_DIST = 14.0f;
+	private static final float CAM_FOLLOW_FAR_DIST = 30.0f;
+	private static final float CAM_FOLLOW_CLOSE_DIST = 0.0f;
+	private static final float CAM_FOLLOW_BIRD_DIST = 200.0f;
 	
 	private static final float CAM_CIRCLE_Z  = 8.0f;
 	private static final float CAM_COCKPIT_Z = 4.0f;
@@ -50,6 +78,9 @@ public class Camera {
 	private static final float cam_defaults[][] = {
 		{ CAM_CIRCLE_DIST, (float)Math.PI / 3.0f, 0.0f }, // circle
 		{ CAM_FOLLOW_DIST, (float)Math.PI / 4.0f, (float)Math.PI / 72.0f }, // follow
+		{ CAM_FOLLOW_FAR_DIST, (float)Math.PI / 4.0f, (float)Math.PI / 72.0f }, // follow far
+		{ CAM_FOLLOW_CLOSE_DIST, (float)Math.PI / 4.0f, (float)Math.PI / 72.0f }, // follow close
+		{ CAM_FOLLOW_BIRD_DIST, (float)Math.PI / 4.0f, (float)Math.PI / 72.0f }, // birds-eye view
 		{ CAM_COCKPIT_Z,   (float)Math.PI / 8.0f, 0.0f }, // cockpit
 		{ CAM_CIRCLE_DIST, (float)Math.PI / 3.0f, 0.0f } // free
 	};
@@ -63,6 +94,9 @@ public class Camera {
 	public enum CamType {
 		E_CAM_TYPE_CIRCLING,
 		E_CAM_TYPE_FOLLOW,
+		E_CAM_TYPE_FOLLOW_FAR,
+		E_CAM_TYPE_FOLLOW_CLOSE,
+		E_CAM_TYPE_BIRD,
 		E_CAM_TYPE_COCKPIT,
 		E_CAM_TYPE_MOUSE
 	}
@@ -77,7 +111,10 @@ public class Camera {
 				initCircleCamera();
 				break;
 			case E_CAM_TYPE_FOLLOW:
-				initFollowCamera();
+			case E_CAM_TYPE_FOLLOW_FAR:
+			case E_CAM_TYPE_FOLLOW_CLOSE:
+			case E_CAM_TYPE_BIRD:
+				initFollowCamera(camtype);
 				break;
 			case E_CAM_TYPE_COCKPIT:
 				break;
@@ -95,6 +132,12 @@ public class Camera {
 		
 	}
 	
+	public void updateType(CamType camtype)
+	{
+		_cameraType = camtype;
+		_movement[CAM_R] = cam_defaults[camtype.ordinal()][CAM_R];
+	}
+	
 	private void initCircleCamera()
 	{
 		_movement[CAM_R] = cam_defaults[0][CAM_R];
@@ -110,11 +153,11 @@ public class Camera {
 		_freedom[CAM_FREE_CHI] = 1;
 	}
 	
-	private void initFollowCamera()
+	private void initFollowCamera(CamType type)
 	{
-		_movement[CAM_R] = cam_defaults[1][CAM_R];
-		_movement[CAM_CHI] = cam_defaults[1][CAM_CHI];
-		_movement[CAM_PHI] = cam_defaults[1][CAM_PHI];
+		_movement[CAM_R] = cam_defaults[type.ordinal()][CAM_R];
+		_movement[CAM_CHI] = cam_defaults[type.ordinal()][CAM_CHI];
+		_movement[CAM_PHI] = cam_defaults[type.ordinal()][CAM_PHI];
 		_movement[CAM_PHI_OFFSET] = 0.0f;
 		
 		_interpolated_cam = 1;
@@ -203,7 +246,10 @@ public class Camera {
 				tdest[2] = B_HEIGHT;
 				break;
 				
-			case  E_CAM_TYPE_FOLLOW:
+			case E_CAM_TYPE_FOLLOW:
+			case E_CAM_TYPE_FOLLOW_FAR:
+			case E_CAM_TYPE_FOLLOW_CLOSE:
+			case E_CAM_TYPE_BIRD:
 				tdest[0] = x;
 				tdest[1] = y;
 				tdest[2] = B_HEIGHT;

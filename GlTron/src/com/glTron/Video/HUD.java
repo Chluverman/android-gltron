@@ -1,3 +1,26 @@
+/*
+ * Copyright © 2012 Iain Churcher
+ *
+ * Based on GLtron by Andreas Umbach (www.gltron.org)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 1, or (at your option)
+ * any later version; provided that the above copyright notice appear 
+ * in all copies and that both that copyright notice and this permission 
+ * notice appear in supporting documentation
+ * 
+ * http://www.gnu.org/licenses/old-licenses/gpl-1.0.html
+ * 
+ * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+ * EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ * OF THIS SOFTWARE.
+ */
+
 package com.glTron.Video;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -5,6 +28,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 
 import com.glTron.R;
+import com.glTron.Game.GLTronGame;
 
 public class HUD {
 	
@@ -27,6 +51,7 @@ public class HUD {
 	// win lose
 	private boolean dispWinner = false;
 	private boolean dispLoser = false;
+	private boolean dispInst = true;
 	
 	public HUD(GL10 gl1, Context ctx)
 	{
@@ -49,10 +74,13 @@ public class HUD {
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		Visual.rasonly(gl);
 		
-		drawFPS(Visual,dt);
+		if(GLTronGame.mPrefs.DrawFPS())
+			drawFPS(Visual,dt);
+		
 		drawConsole(Visual);
 		drawWinLose(Visual);
 		drawScore(plyrScore);
+		drawInstructions(Visual);
 	}
 	
 	public void resetConsole()
@@ -82,6 +110,12 @@ public class HUD {
 		if(dispWinner != true)
 			dispLoser = true;
 	}
+	
+	public void displayInstr(Boolean value)
+	{
+		dispInst = value;
+	}
+	
 	
 	public void addLineToConsole(String str)
 	{
@@ -131,6 +165,33 @@ public class HUD {
 					str);
 		}
 		
+	}
+	
+	private void drawInstructions(Video Visual)
+	{
+		String str1 = null;
+		String str2 = null;
+		
+		if(dispInst)
+		{
+			str1 = "Tap screen to Start";
+			str2 = "Press device menu key for settings";
+			
+			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			
+			xenoTron.drawText(
+					5,
+					Visual._vp_h / 4,
+					(Visual._vp_w / (6 / 4 * str1.length())),
+					str1);
+			
+			xenoTron.drawText(
+					5,
+					Visual._vp_h / 8,
+					(Visual._vp_w / (6/4 * str2.length())),
+					str2);
+					
+		}
 	}
 	
 	private void drawConsole(Video Visual)

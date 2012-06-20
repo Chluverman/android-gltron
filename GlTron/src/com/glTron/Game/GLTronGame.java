@@ -1,3 +1,26 @@
+/*
+ * Copyright © 2012 Iain Churcher
+ *
+ * Based on GLtron by Andreas Umbach (www.gltron.org)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 1, or (at your option)
+ * any later version; provided that the above copyright notice appear 
+ * in all copies and that both that copyright notice and this permission 
+ * notice appear in supporting documentation
+ * 
+ * http://www.gnu.org/licenses/old-licenses/gpl-1.0.html
+ * 
+ * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+ * EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ * OF THIS SOFTWARE.
+ */
+
 package com.glTron.Game;
 
 import java.nio.FloatBuffer;
@@ -24,10 +47,11 @@ public class GLTronGame {
 	public long TimeDt;
 	
 	// Define arena setting 
-	private static final float GridSize = 720.0f;
+	private static float mCurrentGridSize;
 
-	private final int MAX_PLAYERS = 4;
-	private final int OWN_PLAYER = 0;
+	public static final int MAX_PLAYERS = 6;
+	public static final int OWN_PLAYER = 0;
+	public static int mCurrentPlayers = 0;
 	
 	// Define game textures
 	private GLTexture ExplodeTex;
@@ -40,6 +64,7 @@ public class GLTronGame {
 
 	private Player Players[] = new Player[MAX_PLAYERS];
 	
+	// Camera data
 	private Camera Cam;
 	
 	Trails_Renderer TrailRenderer;
@@ -78,6 +103,9 @@ public class GLTronGame {
 	
 	private int aiCount = 1;
 	
+	// Preferences
+	public static UserPrefs mPrefs;
+	
 	public GLTronGame()
 	{
 		initWalls();
@@ -97,14 +125,21 @@ public class GLTronGame {
 	    // Load HUD
 	    tronHUD = new HUD(gl,mContext);
 	    
+		//Load preferences
+	    mPrefs = new UserPrefs(mContext);
+	    mCurrentPlayers = mPrefs.NumberOfPlayers();
+	    mCurrentGridSize = mPrefs.GridSize();
+	    
+	    initWalls();
+	    
 		// Load Models
 		LightBike = new Model(mContext,R.raw.lightcyclehigh);
-		World = new WorldGraphics(gl, mContext, GridSize); // 720
+		World = new WorldGraphics(gl, mContext, mCurrentGridSize);
 		TrailRenderer = new Trails_Renderer(gl,mContext);
 		
-		for(player = 0; player < MAX_PLAYERS; player++)
+		for(player = 0; player < mCurrentPlayers; player++)
 		{
-			Players[player] = new Player(player, GridSize, LightBike, tronHUD);
+			Players[player] = new Player(player, mCurrentGridSize, LightBike, tronHUD);
 		}
 		
 		_handler.sendEmptyMessage(AdView.VISIBLE);
@@ -112,20 +147,20 @@ public class GLTronGame {
 		Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
 		ExplodeTex = new  GLTexture(gl,mContext, R.drawable.gltron_impact);
 
-		ComputerAI.initAI(Walls,Players,GridSize);
+		ComputerAI.initAI(Walls,Players,mCurrentGridSize);
 
 		// Setup perspective
 	    gl.glMatrixMode(GL10.GL_MODELVIEW);
-		Visual.doPerspective(gl, GridSize);
+		Visual.doPerspective(gl, mCurrentGridSize);
 	    gl.glMatrixMode(GL10.GL_MODELVIEW);
 
 	    // Initialise sounds
-	    SoundManager.playMusic(true);
-	    SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
+	    if(mPrefs.PlayMusic())
+	    	SoundManager.playMusic(true);
+	    if(mPrefs.PlaySFX())
+	    	SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
 	    
-		TimeLastFrame = SystemClock.uptimeMillis();
-		TimeCurrent = TimeLastFrame;
-		TimeDt = 0;
+		ResetTime();
 
 		boLoading = false;
 	}
@@ -147,6 +182,35 @@ public class GLTronGame {
 	{
 		SoundManager.getInstance();
 		SoundManager.globalResumeSound();
+
+		if(mPrefs != null)
+		{
+			mPrefs.ReloadPrefs();
+
+			// Update options
+			if(!boInitialState)
+			{
+				Cam.updateType(mPrefs.CameraType());
+			}
+			else
+			{
+				boProcessReset = true;
+			}
+			
+			if(mPrefs.PlayMusic())
+				SoundManager.playMusic(true);
+			else
+				SoundManager.stopMusic();
+			
+			SoundManager.stopSound(ENGINE_SOUND);
+			if(mPrefs.PlaySFX())
+				SoundManager.playSoundLoop(ENGINE_SOUND,mEngineSoundModifier);
+			else
+				SoundManager.stopSound(ENGINE_SOUND);
+			
+			
+			ResetTime();
+		}
 	}
 	
 	public void drawSplash(Context ctx, GL10 gl1)
@@ -220,9 +284,13 @@ public class GLTronGame {
 			{
 				// Change the camera and start movement.
 				_handler.sendEmptyMessage(AdView.GONE);
-				Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_FOLLOW);
+				Cam = new Camera(Players[OWN_PLAYER], mPrefs.CameraType());
 				SoundManager.stopMusic();
-				SoundManager.playMusic(true);
+				
+				if(mPrefs.PlayMusic())
+					SoundManager.playMusic(true);
+				
+				tronHUD.displayInstr(false);
 				boInitialState = false;
 			}
 			else
@@ -264,14 +332,43 @@ public class GLTronGame {
 		
 		if(boProcessReset)
 		{
-			for(plyr = 0; plyr < MAX_PLAYERS; plyr++)
+			// refresh preferences
+			mPrefs.ReloadPrefs();
+			mCurrentPlayers = mPrefs.NumberOfPlayers();
+			
+			if(mPrefs.GridSize() != mCurrentGridSize)
 			{
-				Players[plyr] = new Player(plyr, GridSize, LightBike, tronHUD);
+				mCurrentGridSize = mPrefs.GridSize();
+				
+				// re-init the world
+				initWalls();
+				
+				World = new WorldGraphics(gl, mContext, mCurrentGridSize);
+
+				ComputerAI.initAI(Walls,Players,mCurrentGridSize);
+
+				// Setup perspective
+			    gl.glMatrixMode(GL10.GL_MODELVIEW);
+				Visual.doPerspective(gl, mCurrentGridSize);
+			    gl.glMatrixMode(GL10.GL_MODELVIEW);
 			}
+			
+			for(plyr = 0; plyr < mPrefs.NumberOfPlayers(); plyr++)
+			{
+				Players[plyr] = new Player(plyr, mCurrentGridSize, LightBike, tronHUD);
+				Players[plyr].setSpeed(mPrefs.Speed());
+			}
+			
 			tronHUD.resetConsole();
 			Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
+			
 			SoundManager.stopSound(ENGINE_SOUND); // ensure sound is stopped before playing again.
-			SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
+			
+			tronHUD.displayInstr(true);
+			
+			if(mPrefs.PlaySFX())
+				SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
+			
 			_handler.sendEmptyMessage(AdView.VISIBLE);
 			boInitialState = true;
 			boProcessReset = false;
@@ -292,16 +389,19 @@ public class GLTronGame {
     	}
     	else if(!boInitialState)
     	{
-    		if(mEngineSoundModifier < 1.5f)
+    		if(mPrefs.PlaySFX())
     		{
-    			if(mEngineStartTime != 0)
-    			{
-    				if((TimeCurrent + 1000) > mEngineStartTime)
-    				{
-    					mEngineSoundModifier += 0.01f;
-    					SoundManager.changeRate(ENGINE_SOUND, mEngineSoundModifier);
-    				}
-    			}
+	    		if(mEngineSoundModifier < 1.5f)
+	    		{
+	    			if(mEngineStartTime != 0)
+	    			{
+	    				if((TimeCurrent + 1000) > mEngineStartTime)
+	    				{
+	    					mEngineSoundModifier += 0.01f;
+	    					SoundManager.changeRate(ENGINE_SOUND, mEngineSoundModifier);
+	    				}
+	    			}
+	    		}
     		}
     	}
 
@@ -309,7 +409,7 @@ public class GLTronGame {
 
     	aiCount++;
     	
-    	if(aiCount > 3)
+    	if(aiCount > (mCurrentPlayers - 1))
     		aiCount = 1;
 		
 		RenderGame();
@@ -320,6 +420,15 @@ public class GLTronGame {
 	private long DtHist[] = new long[MAX_SAMPLES];
 	private int DtHead = 0;
 	private int DtElements = 0;
+	
+	private void ResetTime()
+	{
+		TimeLastFrame = SystemClock.uptimeMillis();
+		TimeCurrent = TimeLastFrame;
+		TimeDt = 0;
+		DtHead = 0;
+		DtElements = 0;
+	}
 	
 	private void UpdateTime()
 	{
@@ -366,8 +475,8 @@ public class GLTronGame {
 				{ 0.0f, 1.0f, 0.0f, -1.0f }
 		};
 		
-		float width = GridSize;
-		float height = GridSize;
+		float width = mCurrentGridSize;
+		float height = mCurrentGridSize;
 		
 		int j;
 		
@@ -390,7 +499,7 @@ public class GLTronGame {
 		
 		if(!boInitialState)
 		{
-			for(player = 0; player < MAX_PLAYERS; player++)
+			for(player = 0; player < mCurrentPlayers; player++)
 			{
 				Players[player].doMovement(TimeDt,TimeCurrent,Walls,Players);
 				//check win lose should be in game logic not render - FIXME
@@ -418,7 +527,7 @@ public class GLTronGame {
 		// Load identity
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		Visual.doPerspective(gl, GridSize);
+		Visual.doPerspective(gl, mCurrentGridSize);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, Cam.ReturnCamBuffer());
@@ -443,7 +552,7 @@ public class GLTronGame {
 		
 		Lights.setupLights(gl, LightType.E_WORLD_LIGHTS);
 
-		for(player = 0; player < MAX_PLAYERS; player++)
+		for(player = 0; player < mCurrentPlayers; player++)
 		{
 			if(player == 0 || Players[player].isVisible(Cam))
 					Players[player].drawCycle(gl, TimeCurrent, TimeDt, Lights, ExplodeTex);

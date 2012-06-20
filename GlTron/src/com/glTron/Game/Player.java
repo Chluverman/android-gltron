@@ -1,3 +1,26 @@
+/*
+ * Copyright © 2012 Iain Churcher
+ *
+ * Based on GLtron by Andreas Umbach (www.gltron.org)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 1, or (at your option)
+ * any later version; provided that the above copyright notice appear 
+ * in all copies and that both that copyright notice and this permission 
+ * notice appear in supporting documentation
+ * 
+ * http://www.gnu.org/licenses/old-licenses/gpl-1.0.html
+ * 
+ * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+ * EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+ * OF THIS SOFTWARE.
+ */
+
 package com.glTron.Game;
 
 import java.util.Random;
@@ -52,31 +75,42 @@ public class Player {
 	private final float START_POS[][] = {
 			{ 0.5f, 0.25f},
 			{0.75f, 0.5f},
-			{0.5f, 0.75f},
-			{0.25f, 0.5f}
+			{0.5f, 0.4f},
+			{0.25f, 0.5f},
+			{0.25f, 0.25f},
+			{0.65f, 0.35f}
 	};
 
 	private final float ColourDiffuse[][] = {
-			{ 0.0f, 0.1f, 0.900f, 1.000f},  // Blue
-			{ 1.00f, 0.550f, 0.140f, 1.000f},     // Yellow
+			{ 0.0f, 0.1f, 0.900f, 1.000f},      // Blue
+			{ 1.00f, 0.550f, 0.140f, 1.000f},   // Yellow
 			{ 0.750f, 0.020f, 0.020f, 1.000f},  // Red
-			{ 0.800f, 0.800f, 0.800f, 1.000f}  // Grey 
+			{ 0.800f, 0.800f, 0.800f, 1.000f},  // Grey
+			{ 0.120f, 0.750f, 0.0f, 1.000f},    // Green
+			{ 0.750f, 0.0f, 0.35f, 1.000f}      // Purple
 	};
 
 	private final float ColourSpecular[][] = {
-			{ 0.0f, 0.1f, 0.900f, 1.000f},  // Blue
+			{ 0.0f, 0.1f, 0.900f, 1.000f},    // Blue
 			{0.500f, 0.500f, 0.000f, 1.000f}, // Yellow
 			{0.750f, 0.020f, 0.020f, 1.000f}, // Red
-			{1.00f, 1.00f, 1.00f, 1.000f} // Grey
+			{1.00f, 1.00f, 1.00f, 1.000f},    // Grey
+			{0.050f, 0.500f, 0.00f, 1.00f},   // Green
+			{0.500f, 0.000f, 0.500f, 1.00f},  // Purple
 	};
 	
 	private final float ColourAlpha[][] = {
-			{0.0f, 0.1f, 0.900f, 0.600f}, // Blue
+			{0.0f, 0.1f, 0.900f, 0.600f},      // Blue
 			 {1.000f, 0.850f, 0.140f, 0.600f}, // Yellow
 			 {0.750f, 0.020f, 0.020f, 0.600f}, // Red
-			 {0.700f, 0.700f, 0.700f, 0.600f} // Grey
+			 {0.700f, 0.700f, 0.700f, 0.600f}, // Grey
+			 {0.120f, 0.700f, 0.000f, 0.600f}, // Green
+			 {0.720f, 0.000f, 0.300f, 0.600f}  // Purple
 	};
 
+	private static boolean ColourTaken[] = {false,false,false,false,false,false};
+	private int mPlayerColourIndex;
+	
 //	private final int MAX_LOD_LEVEL = 3;
 	private final int LOD_DIST[][] = {
 			{ 1000, 1000, 1000 },
@@ -87,6 +121,9 @@ public class Player {
 	
 	public Player(int player_number, float gridSize, Model mesh, HUD hud)
 	{
+		int colour = 0;
+		boolean done = false;
+		
 		Random rand = new Random();
 		Direction = rand.nextInt(3); // accepts values 0..3;
 		LastDirection = Direction;
@@ -108,6 +145,33 @@ public class Player {
 		Cycle = mesh;
 		Player_num = player_number;
 		Score = 0;
+		
+		// Select Colour
+		if(player_number == GLTronGame.OWN_PLAYER)
+		{
+			// Re-init the colour taken array - must now create players sequentially for this to work
+			for(colour = 0; colour < GLTronGame.MAX_PLAYERS; colour++)
+			{
+				ColourTaken[colour] = false;
+			}
+
+			ColourTaken[GLTronGame.mPrefs.PlayerColourIndex()] = true;
+			mPlayerColourIndex = GLTronGame.mPrefs.PlayerColourIndex();
+		}
+		else
+		{
+			while(!done)
+			{
+			    if(!ColourTaken[colour])
+			    {
+			    	ColourTaken[colour] = true;
+			    	mPlayerColourIndex = colour;
+			    	done = true;
+			    }
+			    colour++;
+			}
+		}
+		
 	}
 	
 
@@ -182,7 +246,7 @@ public class Player {
 			gl.glEnable(GL10.GL_CULL_FACE);
 			//gl.glTranslatef((GridSize/2.0f), (GridSize/2.0f), 0.0f);
 			//gl.glTranslatef(_Player._PlayerXpos, _Player._PlayerYpos, 0.0f);
-			Cycle.Draw(gl,ColourSpecular[Player_num],ColourDiffuse[Player_num]);
+			Cycle.Draw(gl,ColourSpecular[Player_num],ColourDiffuse[mPlayerColourIndex]);
 			gl.glDisable(GL10.GL_CULL_FACE);
 		}
 		else if(exp_radius < EXP_RADIUS_MAX)
@@ -234,7 +298,9 @@ public class Player {
 					sb1.append(" CRASH wall!");
 					tronHUD.addLineToConsole(sb1.toString());
 					
-					SoundManager.playSound(GLTronGame.CRASH_SOUND, 1.0f);
+					if(GLTronGame.mPrefs.PlaySFX())
+						SoundManager.playSound(GLTronGame.CRASH_SOUND, 1.0f);
+					
 					Log.e("GLTRON", "Wall CRASH");
 					break;
 				}
@@ -250,7 +316,7 @@ public class Player {
 		Segment Wall;
 		Vec V;
 
-		for(j = 0; j < 4; j++)
+		for(j = 0; j < GLTronGame.mCurrentPlayers; j++)
 		{
 			
 			if(players[j].getTrailHeight() < TRAIL_HEIGHT)
@@ -283,7 +349,9 @@ public class Player {
 						
 						players[j].addScore(10);
 						
-						SoundManager.playSound(GLTronGame.CRASH_SOUND, 1.0f);
+						if(GLTronGame.mPrefs.PlaySFX())
+							SoundManager.playSound(GLTronGame.CRASH_SOUND, 1.0f);
+						
 						Log.e("GLTRON", "Wall CRASH");
 						break;
 					}
@@ -466,12 +534,12 @@ public class Player {
 	
 	public float[] getColorAlpha()
 	{
-		return ColourAlpha[Player_num];
+		return ColourAlpha[mPlayerColourIndex];
 	}
 	
 	public float[] getColorDiffuse()
 	{
-		return ColourDiffuse[Player_num];
+		return ColourDiffuse[mPlayerColourIndex];
 	}
 	
 	public void addScore(int val)

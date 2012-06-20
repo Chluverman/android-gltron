@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, glTron!</string>
     <string name="app_name">GL TRON</string>
+    <string name="preferences_title">Preferences</string>
 </resources>
