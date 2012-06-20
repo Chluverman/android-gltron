@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <PreferenceCategory
+        android:title="Player Options"
+        android:key="first_category">
+    
+		<ListPreference    android:title="Bike Colour"
+		                   android:summary="Select which colour bike you would like to play as (changes won't take effect until a new game is started)"
+		                   android:key="playerBike"
+		                   android:defaultValue="0"
+		                   android:entries="@array/bikeArray"
+		                   android:entryValues="@array/playerValues" />       
+	    
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="Music Options"
+		android:key="second_category">
+		
+		<CheckBoxPreference android:title="Music"
+							android:summary="Toggle Music on/off"
+		                    android:defaultValue="true"
+		                    android:key="musicOption" />
+	    	    
+		<CheckBoxPreference android:title="Sound Effects"
+							android:summary="Toggle Sound Effects on/off"
+		                    android:defaultValue="true"
+		                    android:key="sfxOption" />
+		
+			    
+	</PreferenceCategory>
+    
+    
+    <PreferenceCategory
+        android:title="Graphic Options"
+        android:key="third_category">
+    
+    	
+		<CheckBoxPreference android:title="FPS Counter"
+							android:summary="Toggle FPS counter on/off"
+		                    android:defaultValue="false"
+		                    android:key="fpsOption" />
+
+		<ListPreference    android:title="Camera"
+		                   android:summary="Change camera view"
+		                   android:key="cameraPref"
+		                   android:defaultValue="0"
+		                   android:entries="@array/cameraEntries"
+		                   android:entryValues="@array/cameraValues" />                     
+	</PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="Game Options"
+		android:key="fourth_category">
+
+   		<ListPreference    android:title="Number of Players"
+                   android:summary="Selects the number of players (changes won't take effect until a new game is started)"
+                   android:key="playerNumber"
+                   android:defaultValue="4"
+                   android:entries="@array/playerNumEntries"
+                   android:entryValues="@array/playerNumValues" />
+	    
+    		
+		<ListPreference    android:title="Arena Size"
+		                   android:summary="Select the size of the arena (changes won't take effect until a new game is started)"
+		                   android:key="arenaSize"
+		                   android:defaultValue="1"
+		                   android:entries="@array/arenaEntries"
+		                   android:entryValues="@array/arenaValues" />
+		
+		<ListPreference  android:title="Game Speed"
+		                 android:summary="Select the speed of the game (changes won't take effect until a new game is started)"
+		                 android:key="gameSpeed"
+		                 android:defaultValue="1"
+		                 android:entries="@array/gameSpeedEntries"
+		                 android:entryValues="@array/gameSpeedValues" />
+		
+		
+	</PreferenceCategory>    
+</PreferenceScreen>

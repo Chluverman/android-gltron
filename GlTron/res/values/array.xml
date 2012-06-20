@@ -1,0 +1,66 @@
+<resources>
+<string-array name="bikeArray">
+    <item>Blue Bike</item>
+    <item>Yellow Bike</item>
+    <item>Red Bike</item>
+    <item>Grey Bike</item>
+    <item>Green Bike</item>
+    <item>Purple Bike</item>
+</string-array>
+<string-array name="playerValues">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+</string-array>
+<string-array name="cameraEntries">
+    <item>Normal</item>
+    <item>Far</item>
+    <item>Close</item>
+    <item>Birds-eye</item>
+</string-array>
+<string-array name="cameraValues">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+</string-array>
+<string-array name="arenaValues">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+</string-array>
+<string-array name="arenaEntries">
+    <item>Small</item>
+    <item>Medium</item>
+    <item>Large</item>
+</string-array>
+<string-array name="playerNumEntries">
+    <item>6 Players</item>
+    <item>5 Players</item>
+    <item>4 Players (Default)</item>
+    <item>3 Players</item>
+    <item>2 Players</item>
+</string-array>
+<string-array name="playerNumValues">
+    <item>6</item>
+    <item>5</item>
+    <item>4</item>
+    <item>3</item>
+    <item>2</item>
+</string-array>
+<string-array name="gameSpeedEntries">
+    <item>Slow</item>
+    <item>Normal</item>
+    <item>Fast</item>
+    <item>Extreme</item>
+</string-array>
+<string-array name="gameSpeedValues">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+</string-array>
+</resources>

@@ -1,0 +1,53 @@
+Android Port of glTRON -
+
+INTRODUCTION
+============
+This project was undertaken by myself (Iain Churcher) to learn both android and openGL ES programming.
+
+The code in this project was based on glTron version 0.7 by Andreas Umbach and can be found at the following website:
+
+www.gltron.org
+
+The code created is Java port of the original 'C' code, there is no Android NDK calls thus should be fully portable to all current and future Android platforms.
+
+This is not a faithful port and I have taken 'creative' license with numerous concepts.
+
+I am fairly new to Java coming from a C background and as such please forgive my messy inefficient code.
+
+I hope that this helps other people with learning to program android opengl games and that they have as much fun as I have had making this.
+
+I can be contacted via GitHub (Chluverman)... or via iain.linux.coding@gmail.com
+
+LICENSE
+=======
+
+As this code was derived from a GPL project all code thus provided remains under the GPL and can be found on github under the android-gltron repository.
+
+TO DO LIST
+==========
+
+As this was a learning experiance this is not a faitful port missing features are as follows:
+
+1) Recogniser not implemented.
+2) Bike shadows not implemented
+3) Bike glow not implemented
+4) Bike model explosion (attempted this but was far to slow on my phone)
+5) Speed Boost..
+6) 2d Map
+7) Multiplayer (alas i only have one android device)
+8) Loadable artpacks (fixed to the default)
+9) Any user settings.. (e.g. fixed to HARD AI)
+10) 3D sound (only your own bike makes engine noise and no sounds are directional)
+
+Probably a few other things ive missed.
+
+I have no immediate plans to continue working this code but if enough people request features than I shall endevour to find some more time.
+
+DEVICES TESTED ON
+=================
+
+Developed on a Nexus S running Ice Cream Sandwich
+
+Tested on:
+Samsung Tab 10.1
+Sony Erricson Xperia

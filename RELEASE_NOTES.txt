@@ -1,0 +1,19 @@
+RELEASE NOTES:
+
+June 2012 - 1.1 - User preferences added
+
+Added user specified options:-
+  1) Bike Colour select from 6 colours
+  2) Toggle Music / SFX on/off
+  3) Toggle FPS counter
+  4) Change Camera mode
+  5) Select number of players between 2 and 6
+  6) Select Arena Size (Small, Medium, Large)
+  7) Select Game Speed (Slow, Normal, Fast, Extreme)
+
+Note: Increasing the Arena size and adding players reduces performance.
+
+Thanks to Noah from NVM Tech for inspiration and code contributions.
+
+
+Feb 2012 - 1.0 - Initial version
