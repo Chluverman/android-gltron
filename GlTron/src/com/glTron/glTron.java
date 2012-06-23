@@ -132,8 +132,7 @@ public class glTron extends Activity {
      public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
         	this.startActivity(new Intent(this, Preferences.class));
-
         }
-        return true;
+        return super.onKeyUp(keyCode, event);
     }
 }
