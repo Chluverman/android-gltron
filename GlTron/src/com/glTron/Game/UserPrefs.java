@@ -85,6 +85,7 @@ public class UserPrefs {
 				break;
 			case C_PREF_BIRD_CAM:
 				mCameraType = Camera.CamType.E_CAM_TYPE_BIRD;
+				break;
 			default:
 				mCameraType = Camera.CamType.E_CAM_TYPE_FOLLOW;
 				break;
