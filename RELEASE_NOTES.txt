@@ -1,5 +1,9 @@
 RELEASE NOTES:
 
+June 2012 - 1.1.1 - Bug fixes
+  1) Fix birds eye camera view (was defaulting to Normal when selected)
+  2) Fix back key to exit game (broken after last update)
+
 June 2012 - 1.1 - User preferences added
 
 Added user specified options:-
