@@ -36,7 +36,6 @@ import com.glTron.Game.Camera.CamType;
 import com.glTron.Sound.SoundManager;
 import com.glTron.Video.*;
 import com.glTron.Video.Lighting.LightType;
-import com.google.ads.AdView;
 
 
 public class GLTronGame {
@@ -141,8 +140,6 @@ public class GLTronGame {
 		{
 			Players[player] = new Player(player, mCurrentGridSize, LightBike, tronHUD);
 		}
-		
-		_handler.sendEmptyMessage(AdView.VISIBLE);
 		
 		Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
 		ExplodeTex = new  GLTexture(gl,mContext, R.drawable.gltron_impact);
@@ -283,7 +280,6 @@ public class GLTronGame {
 			if(boInitialState)
 			{
 				// Change the camera and start movement.
-				_handler.sendEmptyMessage(AdView.GONE);
 				Cam = new Camera(Players[OWN_PLAYER], mPrefs.CameraType());
 				SoundManager.stopMusic();
 				
@@ -369,7 +365,6 @@ public class GLTronGame {
 			if(mPrefs.PlaySFX())
 				SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
 			
-			_handler.sendEmptyMessage(AdView.VISIBLE);
 			boInitialState = true;
 			boProcessReset = false;
 		}
