@@ -1,5 +1,11 @@
 RELEASE NOTES:
 
+June 2012 - 1.1.2 - Remove AdMob
+  1) Remove AdMob including related permissions to comply fully with the GPL
+  2) Updated license info to GPLv3
+  3) Added .gitignore file to no longer configure auto generated files
+  4) Added installLocation in manifest to allow moving to external storage
+
 June 2012 - 1.1.1 - Bug fixes
   1) Fix birds eye camera view (was defaulting to Normal when selected)
   2) Fix back key to exit game (broken after last update)
