@@ -1,27 +1,25 @@
 /*
- * Copyright © 2012 Noah NZM Tech
  * Copyright © 2012 Iain Churcher
+ * Copyright © 2012 Noah NZM Tech
  *
  * Based on GLtron by Andreas Umbach (www.gltron.org)
  *
- * This program is free software; you can redistribute it and/or modify
+ * This file is part of GL TRON.
+ *
+ * GL TRON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 1, or (at your option)
- * any later version; provided that the above copyright notice appear 
- * in all copies and that both that copyright notice and this permission 
- * notice appear in supporting documentation
- * 
- * http://www.gnu.org/licenses/old-licenses/gpl-1.0.html
- * 
- * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
- * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
- * EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY SPECIAL, INDIRECT OR
- * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
- * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
- * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
- * OF THIS SOFTWARE.
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * GL TRON is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GL TRON.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
-
 package com.glTron;
 
 import android.os.Bundle;
