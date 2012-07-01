@@ -56,11 +56,14 @@ public class GLTronGame {
 	private GLTexture SplashScreen;
 	
 	private Model LightBike;
+	private Model RecognizerModel;
 	private Video Visual;
 	private WorldGraphics World;
     private Lighting Lights = new Lighting();
 
 	private Player Players[] = new Player[MAX_PLAYERS];
+	
+	private Recognizer mRecognizer;
 	
 	// Camera data
 	private Camera Cam;
@@ -79,6 +82,7 @@ public class GLTronGame {
 	public static int CRASH_SOUND = 1;
 	public static int ENGINE_SOUND = 2;
 	public static int MUSIC_SOUND = 3;
+	public static int RECOGNIZER_SOUND = 4;
 	
 	float mEngineSoundModifier = 1.0f;
 	long mEngineStartTime = 0;
@@ -118,6 +122,7 @@ public class GLTronGame {
 	    SoundManager.initSounds(mContext);
 	    SoundManager.addSound(ENGINE_SOUND, R.raw.game_engine);
 	    SoundManager.addSound(CRASH_SOUND, R.raw.game_crash);
+	    SoundManager.addSound(RECOGNIZER_SOUND, R.raw.game_recognizer);
 	    SoundManager.addMusic(R.raw.song_revenge_of_cats);
 
 	    // Load HUD
@@ -132,6 +137,7 @@ public class GLTronGame {
 	    
 		// Load Models
 		LightBike = new Model(mContext,R.raw.lightcyclehigh);
+		RecognizerModel = new Model(mContext,R.raw.recognizerhigh);
 		World = new WorldGraphics(gl, mContext, mCurrentGridSize);
 		TrailRenderer = new Trails_Renderer(gl,mContext);
 		
@@ -139,6 +145,8 @@ public class GLTronGame {
 		{
 			Players[player] = new Player(player, mCurrentGridSize, LightBike, tronHUD);
 		}
+		
+		mRecognizer = new Recognizer(mCurrentGridSize);
 		
 		Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
 		ExplodeTex = new  GLTexture(gl,mContext, R.drawable.gltron_impact);
@@ -154,7 +162,7 @@ public class GLTronGame {
 	    if(mPrefs.PlayMusic())
 	    	SoundManager.playMusic(true);
 	    if(mPrefs.PlaySFX())
-	    	SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
+	    	SoundManager.playSoundLoop(RECOGNIZER_SOUND, 1.0f);
 	    
 		ResetTime();
 
@@ -183,10 +191,14 @@ public class GLTronGame {
 		{
 			mPrefs.ReloadPrefs();
 
+			SoundManager.stopSound(RECOGNIZER_SOUND);
+
 			// Update options
 			if(!boInitialState)
 			{
 				Cam.updateType(mPrefs.CameraType());
+				if(mPrefs.PlaySFX() && mPrefs.DrawRecognizer())
+					SoundManager.playSoundLoop(RECOGNIZER_SOUND, 1.0f);
 			}
 			else
 			{
@@ -199,8 +211,9 @@ public class GLTronGame {
 				SoundManager.stopMusic();
 			
 			SoundManager.stopSound(ENGINE_SOUND);
-			if(mPrefs.PlaySFX())
+			if(mPrefs.PlaySFX()) {
 				SoundManager.playSoundLoop(ENGINE_SOUND,mEngineSoundModifier);
+			}
 			else
 				SoundManager.stopSound(ENGINE_SOUND);
 			
@@ -285,6 +298,9 @@ public class GLTronGame {
 				if(mPrefs.PlayMusic())
 					SoundManager.playMusic(true);
 				
+				if(mPrefs.PlaySFX() && mPrefs.DrawRecognizer())
+					SoundManager.playSoundLoop(RECOGNIZER_SOUND, 1.0f);
+				
 				tronHUD.displayInstr(false);
 				boInitialState = false;
 			}
@@ -354,10 +370,13 @@ public class GLTronGame {
 				Players[plyr].setSpeed(mPrefs.Speed());
 			}
 			
+			mRecognizer = new Recognizer(mCurrentGridSize);
+			
 			tronHUD.resetConsole();
 			Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
 			
 			SoundManager.stopSound(ENGINE_SOUND); // ensure sound is stopped before playing again.
+			SoundManager.stopSound(RECOGNIZER_SOUND);
 			
 			tronHUD.displayInstr(true);
 			
@@ -512,6 +531,9 @@ public class GLTronGame {
 					
 			}
 			
+			if(mPrefs.DrawRecognizer())
+				mRecognizer.doMovement(TimeDt);
+			
 		}
 		
 		Cam.doCameraMovement(Players[OWN_PLAYER],TimeCurrent, TimeDt);
@@ -541,6 +563,9 @@ public class GLTronGame {
 		
 		gl.glDepthMask(true);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
+
+		if(mPrefs.DrawRecognizer())
+			mRecognizer.draw(gl, RecognizerModel);
 		
 		World.drawWalls(gl);
 		

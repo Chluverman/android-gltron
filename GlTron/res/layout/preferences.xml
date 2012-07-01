@@ -78,6 +78,10 @@
 		                 android:entries="@array/gameSpeedEntries"
 		                 android:entryValues="@array/gameSpeedValues" />
 		
+		<CheckBoxPreference  android:title="Draw Recognizer"
+		                     android:summary="Display the Recognizer in game (can slow framerate if enabled)"
+		                     android:defaultValue="true"
+		                     android:key="drawRecog" />
 		
 	</PreferenceCategory>    
 </PreferenceScreen>

@@ -42,7 +42,7 @@ public class SoundManager {
 	private static AudioManager mAudioManager;
 	private static Context mContext;
 	
-	private static final int MAX_SOUNDS = 4;
+	private static final int MAX_SOUNDS = 10;
 	
 	private static int MAX_INDEX = 10;
 	

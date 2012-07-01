@@ -277,16 +277,18 @@ public class Model {
 			mIndicesBuffer[i].position(0);
 		}
 		
-		float[] HullColour = {0.0f, 0.1f, 0.9f, 1.0f};
-		
-		mMaterials.SetMaterialColour("Hull", ColourType.E_AMBIENT, HullColour);
-		mMaterials.SetMaterialColour("Hull", ColourType.E_DIFFUSE, HullColour);
-
 		computeBBox();
 		
 	}
 
 	public void Draw(GL10 gl, float ambient_color[], float diffuse_color[])
+	{
+		mMaterials.SetMaterialColour("Hull", ColourType.E_AMBIENT, ambient_color);
+		mMaterials.SetMaterialColour("Hull", ColourType.E_DIFFUSE, diffuse_color);
+		Draw(gl);
+	}
+	
+	public void Draw(GL10 gl)
 	{
 		int MaterialCount = mMaterials.GetNumber();
 		
@@ -295,9 +297,6 @@ public class Model {
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
 		gl.glNormalPointer(GL10.GL_FLOAT, 0, mNormalBuffer);
 
-		mMaterials.SetMaterialColour("Hull", ColourType.E_AMBIENT, ambient_color);
-		mMaterials.SetMaterialColour("Hull", ColourType.E_DIFFUSE, diffuse_color);
-		
 		for(int i=0; i<MaterialCount;i++) {
 			if(mIndicesBuffer[i].capacity() > 0) {
 

@@ -1,0 +1,11 @@
+# 
+# Wavefront material file
+# Converted by 3D Exploration 1.3.00 BETA
+# XDimension Software
+# http://www.xdsoft.com/explorer/
+# 
+newmtl Hull
+	 Ka 0.2 0.290196 0.215686
+	 Kd 0.14902 0.458824 0.164706
+	 Ks 0.898039 0.898039 0.898039
+	 illum 0

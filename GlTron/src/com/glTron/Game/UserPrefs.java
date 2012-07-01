@@ -50,6 +50,7 @@ public class UserPrefs {
 	private boolean mSFX;
 	
 	private boolean mFPS;
+	private boolean mDrawRecog;
 	
 	private int mNumOfPlayers;
 	private float mGridSize;
@@ -99,6 +100,7 @@ public class UserPrefs {
 		speedIndex = Integer.valueOf(prefs.getString("gameSpeed", "1"));
 		mSpeed = C_SPEED[speedIndex];
 		mPlayerColourIndex = Integer.valueOf(prefs.getString("playerBike","0"));
+		mDrawRecog = prefs.getBoolean("drawRecog", true);
 	}
 	
 	public Camera.CamType CameraType()
@@ -140,5 +142,10 @@ public class UserPrefs {
 	public int PlayerColourIndex()
 	{
 		return mPlayerColourIndex;
+	}
+	
+	public boolean DrawRecognizer()
+	{
+		return mDrawRecog;
 	}
 }
