@@ -44,7 +44,7 @@ public class Player {
 	
 	GLTexture _ExplodeTex;
 	
-	private Segment[] Trails = new Segment[1000] ;
+	private Segment[] Trails = new Segment[10] ;
 
 	private HUD tronHUD; // Allow messages to be added to console
 	
@@ -179,12 +179,28 @@ public class Player {
 		float x = getXpos();
 		float y = getYpos();
 		
-		trailOffset++;
-		Trails[trailOffset] = new Segment();
-		Trails[trailOffset].vStart.v[0] = x;
-		Trails[trailOffset].vStart.v[1] = y;
-		Trails[trailOffset].vDirection.v[0] = 0.0f;
-		Trails[trailOffset].vDirection.v[1] = 0.0f;
+		if(trailOffset == 9)
+		{
+			for(int i=0 ; i<9 ; i++)
+			{
+				Trails[i] = Trails[i+1];
+			}
+			Trails[trailOffset] = new Segment();
+			Trails[trailOffset].vStart.v[0] = x;
+			Trails[trailOffset].vStart.v[1] = y;
+			Trails[trailOffset].vDirection.v[0] = 0.0f;
+			Trails[trailOffset].vDirection.v[1] = 0.0f;
+
+		}
+		else
+		{
+			trailOffset++;
+			Trails[trailOffset] = new Segment();
+			Trails[trailOffset].vStart.v[0] = x;
+			Trails[trailOffset].vStart.v[1] = y;
+			Trails[trailOffset].vDirection.v[0] = 0.0f;
+			Trails[trailOffset].vDirection.v[1] = 0.0f;
+		}
 		
 		LastDirection = Direction;
 		Direction = (Direction + direction) % 4;
