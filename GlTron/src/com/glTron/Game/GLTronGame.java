@@ -27,7 +27,6 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
-import android.os.Handler;
 import android.os.SystemClock;
 
 import com.glTron.R;
@@ -91,9 +90,6 @@ public class GLTronGame
 	
 	// Font
 	HUD tronHUD;
-	
-	// Ads
-	Handler _handler;
 	
 	Context mContext;
 	GL10 gl;
@@ -273,10 +269,6 @@ public class GLTronGame
 		RenderGame();
 	}
 
-	public void setUI_Handler(Handler handler)
-	{
-		_handler = handler;
-	}
 	
 	// hooks for android pausing thread
 	public void pauseGame()

@@ -27,6 +27,8 @@ import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.view.MotionEvent;
 
+import com.glTron.logging.Logger;
+
 public class OpenGLView extends GLSurfaceView {
 	
 	private OpenGLRenderer _renderer;
@@ -36,28 +38,31 @@ public class OpenGLView extends GLSurfaceView {
 	
 	public OpenGLView(Context context,int width, int height) {
 		super(context);
+		Logger.v(this, "View's constructor called");
+		Logger.v(this, "Setting up the renderer object");
 		_renderer = new OpenGLRenderer(context, width, height);
 		setRenderer(_renderer);
-	}
-	
-	public void setUI_Handler(Handler handler)
-	{
-		_renderer.setUI_Handler(handler);
+
+		Logger.v(this, "All set for View");
 	}
 	
 	public void onPause()
 	{
+		Logger.v(this, "View Paused");
 		_renderer.onPause();
 	}
 	
 	public void onResume()
 	{
+		Logger.v(this, "View Resumed");
 		_renderer.onResume();
 	}
 	
-	public boolean onTouchEvent(final MotionEvent event) {
+	public boolean onTouchEvent(final MotionEvent event) 
+	{
 
-		if(event.getAction() == MotionEvent.ACTION_DOWN) {
+		if(event.getAction() == MotionEvent.ACTION_DOWN) 
+		{
 			_x = event.getX();
 			_y = event.getY();
 			_renderer.onTouch(_x, _y);

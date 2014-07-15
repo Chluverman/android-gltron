@@ -55,10 +55,6 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 		Game.updateScreenSize(win_width, win_height);
 	}
 	
-	public void setUI_Handler(Handler handler)
-	{
-		Game.setUI_Handler(handler);
-	}
 	
 	public void onTouch(float x, float y)
 	{
