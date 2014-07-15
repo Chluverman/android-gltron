@@ -33,9 +33,6 @@ public class OpenGLView extends GLSurfaceView {
 	
 	private OpenGLRenderer _renderer;
 	
-	private float _x = 0;
-	private float _y = 0;
-	
 	public OpenGLView(Context context,int width, int height) {
 		super(context);
 		Logger.v(this, "View's constructor called");
@@ -60,13 +57,12 @@ public class OpenGLView extends GLSurfaceView {
 	
 	public boolean onTouchEvent(final MotionEvent event) 
 	{
+		Logger.v(this, "Touch Event detected at (x , y) : " + event.getX() + event.getY());
 
 		if(event.getAction() == MotionEvent.ACTION_DOWN) 
 		{
-			_x = event.getX();
-			_y = event.getY();
-			_renderer.onTouch(_x, _y);
-			
+			Logger.v(this, "Passing the touchevent to the renderer object");
+			_renderer.onTouch(event.getX(),event.getY());
 		}
 		
 		return true;
