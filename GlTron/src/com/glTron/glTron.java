@@ -40,16 +40,15 @@ public class glTron extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         
-		WindowManager w = getWindowManager();
-	    Display d = w.getDefaultDisplay();
-	    int width = d.getWidth();
-	    int height = d.getHeight();
-	   
-	    super.onCreate(savedInstanceState);
-	    
-	    this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	WindowManager w = getWindowManager();
+	Display d = w.getDefaultDisplay();
+	int width = d.getWidth();
+	int height = d.getHeight();
+
+	super.onCreate(savedInstanceState);
+
+	this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 	    
         _View = new OpenGLView(this, width, height);
         setContentView(_View);

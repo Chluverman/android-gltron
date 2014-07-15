@@ -44,7 +44,7 @@ public class Player {
 	
 	GLTexture _ExplodeTex;
 	
-	private Segment[] Trails = new Segment[10] ;
+	private Segment[] Trails = new Segment[4] ;
 
 	private HUD tronHUD; // Allow messages to be added to console
 	
@@ -179,9 +179,9 @@ public class Player {
 		float x = getXpos();
 		float y = getYpos();
 		
-		if(trailOffset == 9)
+		if(trailOffset == 3)
 		{
-			for(int i=0 ; i<9 ; i++)
+			for(int i=0 ; i<3 ; i++)
 			{
 				Trails[i] = Trails[i+1];
 			}

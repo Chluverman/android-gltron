@@ -47,9 +47,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	public OpenGLRenderer(Context context, int win_width, int win_height)
 	{
 		mContext = context;
-		Log.e("GLTRON", "Renderer Constructor: Create Video Object");
+		Log.d("GLTRON", "Renderer Constructor: Create Video Object");
 		Debug = sb.append("Screen size = ").append(win_width).append(",").append(win_height).toString();
-		Log.e("GLTRON", Debug);
+		Log.d("GLTRON", Debug);
 		Game.updateScreenSize(win_width, win_height);
 	}
 	
