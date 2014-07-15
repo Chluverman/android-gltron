@@ -1,4 +1,4 @@
-package inc.flide.touchboard.logging;
+package com.glTron.logging;
 
 public interface LoggingConstants
 {
