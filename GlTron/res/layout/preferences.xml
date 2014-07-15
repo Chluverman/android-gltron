@@ -39,10 +39,10 @@
         android:key="third_category">
     
     	
-		<CheckBoxPreference android:title="FPS Counter"
-							android:summary="Toggle FPS counter on/off"
-		                    android:defaultValue="false"
-		                    android:key="fpsOption" />
+		<CheckBoxPreference 	android:title="FPS Counter"
+					android:summary="Toggle FPS counter on/off"
+					android:defaultValue="false"
+					android:key="fpsOption" />
 
 		<ListPreference    android:title="Camera"
 		                   android:summary="Change camera view"
@@ -59,7 +59,7 @@
    		<ListPreference    android:title="Number of Players"
                    android:summary="Selects the number of players (changes won't take effect until a new game is started)"
                    android:key="playerNumber"
-                   android:defaultValue="4"
+                   android:defaultValue="3"
                    android:entries="@array/playerNumEntries"
                    android:entryValues="@array/playerNumValues" />
 	    
@@ -74,7 +74,7 @@
 		<ListPreference  android:title="Game Speed"
 		                 android:summary="Select the speed of the game (changes won't take effect until a new game is started)"
 		                 android:key="gameSpeed"
-		                 android:defaultValue="1"
+		                 android:defaultValue="3"
 		                 android:entries="@array/gameSpeedEntries"
 		                 android:entryValues="@array/gameSpeedValues" />
 		

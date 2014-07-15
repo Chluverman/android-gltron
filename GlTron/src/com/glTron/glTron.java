@@ -1,7 +1,8 @@
 /*
- * Copyright © 2012 Iain Churcher
+ * Copyright © 2012 Ravi Agarwal (flide)
  *
- * Based on GLtron by Andreas Umbach (www.gltron.org)
+ * Based on Android port of GLtron by Iain Churcher and original source code can be found at :
+ * https://github.com/Chluverman/android-gltron.git
  *
  * This file is part of GL TRON.
  *
@@ -30,71 +31,87 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class glTron extends Activity {
-    /** Called when the activity is first created. */
+import com.glTron.logging.Logger;
+
+public class glTron extends Activity 
+{
+
 	private OpenGLView _View;
 	
 	private Boolean _FocusChangeFalseSeen = false;
 	private Boolean _Resume = false;
 	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        
-	WindowManager w = getWindowManager();
-	Display d = w.getDefaultDisplay();
-	int width = d.getWidth();
-	int height = d.getHeight();
+	@Override
+	public void onCreate(Bundle savedInstanceState) 
+	{
+		Logger.v(this,"Starting up the application");
+		WindowManager windowManager = getWindowManager();
+		Display display = windowManager.getDefaultDisplay();
+		int width = display.getWidth();
+		int height = display.getHeight();
 
-	super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);
 
-	this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-	    
-        _View = new OpenGLView(this, width, height);
-        setContentView(_View);
+		Logger.v(this,"Setting up fullscreen flags");
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		    
+		Logger.v(this,"Setting up the View");
+		_View = new OpenGLView(this, width, height);
+		setContentView(_View);
 
-    }
+		Logger.v(this,"onCreate function ended");
+	}
     
     
-    @Override
-    public void onPause() {
-    	_View.onPause();
-    	super.onPause();
-    }
+	@Override
+	public void onPause() 
+	{
+		Logger.v(this, "Application Paused");
+		_View.onPause();
+		super.onPause();
+	}
     
-    @Override
-    public void onResume() {
-    	if(!_FocusChangeFalseSeen)
-    	{
-    		_View.onResume();
-    	}
-    	_Resume = true;
-    	super.onResume();
-    }
+	@Override
+	public void onResume() 
+	{
+		Logger.v(this, "Application Resumed");
+		if(!_FocusChangeFalseSeen)
+		{
+			_View.onResume();
+		}
+		_Resume = true;
+		super.onResume();
+	}
     
-    @Override
-    public void onWindowFocusChanged(boolean focus) {
-    	if(focus)
-    	{
-    		if(_Resume)
-    		{
-    			_View.onResume();
-    		}
-    		
-    		_Resume = false;
-    		_FocusChangeFalseSeen = false;
-    	}
-    	else
-    	{
-    		_FocusChangeFalseSeen = true;
-    	}
-    }   
+	@Override
+	public void onWindowFocusChanged(boolean focus) 
+	{
+		Logger.v(this, "Window Focus Changed");
+		if(focus)
+		{
+			if(_Resume)
+			{
+				_View.onResume();
+			}
+			
+			_Resume = false;
+			_FocusChangeFalseSeen = false;
+		}
+		else
+		{
+			_FocusChangeFalseSeen = true;
+		}
+	}   
     
-    //open menu when key pressed
-     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-        	this.startActivity(new Intent(this, Preferences.class));
-        }
-        return super.onKeyUp(keyCode, event);
-    }
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) 
+	{
+		if (keyCode == KeyEvent.KEYCODE_MENU) 
+		{
+			Logger.i(this, "Menu Key Pressed, Calling the Preferences Activity");
+			this.startActivity(new Intent(this, Preferences.class));
+		}
+		return super.onKeyUp(keyCode, event);
+	}
 }

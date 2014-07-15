@@ -33,6 +33,8 @@ import android.util.Log;
 
 import com.glTron.Game.GLTronGame;
 
+import com.glTron.logging.Logger;
+
 public class OpenGLRenderer implements GLSurfaceView.Renderer {
 
 	GLTronGame Game = new GLTronGame();
@@ -47,9 +49,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	public OpenGLRenderer(Context context, int win_width, int win_height)
 	{
 		mContext = context;
-		Log.d("GLTRON", "Renderer Constructor: Create Video Object");
+		Logger.Debug(this,"Renderer Constructor: Create Video Object");
 		Debug = sb.append("Screen size = ").append(win_width).append(",").append(win_height).toString();
-		Log.d("GLTRON", Debug);
+		Logger.Debug(this, Debug);
 		Game.updateScreenSize(win_width, win_height);
 	}
 	
@@ -75,7 +77,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 
-	    Log.e("GLTRON", "Renderer: Surface Created Do perspective");
+	    Logger.Debug(this, "Renderer: Surface Created Do perspective");
 
 	    //Game.initialiseGame(mContext, gl);
 	    Game.drawSplash(mContext, gl);
@@ -84,16 +86,17 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
 	
 	@Override
 	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		Log.e("GLTRON", "Renderer: Surface changed");
+		Logger.Debug(this, "Renderer: Surface changed");
 		sb=null;
 		sb = new StringBuffer(40);
 		Debug = sb.append("Screen size = ").append(w).append(",").append(h).toString();
-		Log.e("GLTRON", Debug);
+		Logger.Debug(this, Debug);
 		Game.updateScreenSize(w, h);
 	}
 	
 	@Override
-	public void onDrawFrame(GL10 gl) {
+	public void onDrawFrame(GL10 gl) 
+	{
 
 		if(frameCount == 1)
 		{
