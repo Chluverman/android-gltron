@@ -35,76 +35,66 @@ import com.glTron.Game.GLTronGame;
 
 import com.glTron.logging.Logger;
 
-public class OpenGLRenderer implements GLSurfaceView.Renderer {
+public class OpenGLRenderer implements GLSurfaceView.Renderer 
+{
 
-	GLTronGame Game = new GLTronGame();
+	GLTronGame Game;
 	
 	Context mContext;
 	
-	String Debug;
-	StringBuffer sb = new StringBuffer(40);
-
 	private int frameCount = 0;
 	
 	public OpenGLRenderer(Context context, int win_width, int win_height)
 	{
+		Logger.v(this, "Setting up the Renderer Object");
+		Game = new GLTronGame();
 		mContext = context;
-		Logger.Debug(this,"Renderer Constructor: Create Video Object");
-		Debug = sb.append("Screen size = ").append(win_width).append(",").append(win_height).toString();
-		Logger.Debug(this, Debug);
 		Game.updateScreenSize(win_width, win_height);
 	}
 	
 	
 	public void onTouch(float x, float y)
 	{
+		Logger.v(this, "Renderer received touch co-ordinates, passing it on to the Game object");
 		Game.addTouchEvent(x, y);
 	}
 	
 	public void onPause()
 	{
+		Logger.v(this, "Renderer received the on Pause signal, passing it on to the Game object");
 		Game.pauseGame();
 	}
 	
 	public void onResume()
 	{
+		Logger.v(this, "Renderer received the on Resume signal, passing it on to the Game object");
 		Game.resumeGame();
 	}
 	
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+	@Override
+	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
+	{
+	    Logger.Debug(this, "Surface Created, Do perspective");
 
-	    Logger.Debug(this, "Renderer: Surface Created Do perspective");
-
-	    //Game.initialiseGame(mContext, gl);
 	    Game.drawSplash(mContext, gl);
 	}
-
 	
 	@Override
-	public void onSurfaceChanged(GL10 gl, int w, int h) {
-		Logger.Debug(this, "Renderer: Surface changed");
-		sb=null;
-		sb = new StringBuffer(40);
-		Debug = sb.append("Screen size = ").append(w).append(",").append(h).toString();
-		Logger.Debug(this, Debug);
+	public void onSurfaceChanged(GL10 gl, int w, int h) 
+	{
+		Logger.Debug(this, "Surface changed, Update the game screen");
 		Game.updateScreenSize(w, h);
 	}
 	
 	@Override
 	public void onDrawFrame(GL10 gl) 
 	{
-
 		if(frameCount == 1)
-		{
-			Game.initialiseGame();
-		}
-		else if(frameCount > 1)
-		{
-			Game.RunGame();
-		}
+		{ Game.initialiseGame(); }
+		else if(frameCount > 1) 
+		{ Game.RunGame(); }
 
 		frameCount++;
-		
 	}
 
 	
