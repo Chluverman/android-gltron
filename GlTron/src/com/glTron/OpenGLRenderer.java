@@ -46,10 +46,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer
 	
 	public OpenGLRenderer(Context context, int win_width, int win_height)
 	{
-		Logger.v(this, "Setting up the Renderer Object");
+		Logger.v(this, "Setting up the Renderer Object : creating the game object, setting the context");
 		Game = new GLTronGame();
 		mContext = context;
-		Game.updateScreenSize(win_width, win_height);
 	}
 	
 	
@@ -74,9 +73,9 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
 	{
-	    Logger.Debug(this, "Surface Created, Do perspective");
+		Logger.Debug(this, "Surface Created, Do perspective");
 
-	    Game.drawSplash(mContext, gl);
+		Game.drawSplash(mContext, gl);
 	}
 	
 	@Override
@@ -90,12 +89,15 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer
 	public void onDrawFrame(GL10 gl) 
 	{
 		if(frameCount == 1)
-		{ Game.initialiseGame(); }
+		{ 
+			Logger.v(this, "Drawing the first frame for the game");
+			Game.initialiseGame(); 
+		}
 		else if(frameCount > 1) 
-		{ Game.RunGame(); }
+		{ 
+			Game.RunGame(); 
+		}
 
 		frameCount++;
 	}
-
-	
 }

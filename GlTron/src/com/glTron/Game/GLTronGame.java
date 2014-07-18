@@ -107,13 +107,9 @@ public class GLTronGame
 	// Preferences
 	public static UserPrefs mPrefs;
 	
-	public GLTronGame()
-	{
-		initWalls();
-	}
-	
 	public void initialiseGame()
 	{
+		Logger.v(this, "Initializing the Game");
 		int player;
 
 		// Load sounds
@@ -166,6 +162,7 @@ public class GLTronGame
 		ResetTime();
 
 		boLoading = false;
+		Logger.v(this, "Game Initialized Successfully");
 	}
 
 	public void RunGame()
@@ -273,13 +270,16 @@ public class GLTronGame
 	// hooks for android pausing thread
 	public void pauseGame()
 	{
+		Logger.v(this, "Signal received to pause the game");
 		SoundManager.getInstance();
 		SoundManager.globalPauseSound();
+		Logger.v(this, "Signal received to pause the game has been processed");
 	}
 	
 	// hooks for android resuming thread
 	public void resumeGame()
 	{
+		Logger.v(this, "Signal received to resume the game");
 		SoundManager.getInstance();
 		SoundManager.globalResumeSound();
 
@@ -316,10 +316,12 @@ public class GLTronGame
 			
 			ResetTime();
 		}
+		Logger.v(this, "Signal received to resume the game has been processed completly");
 	}
 	
 	public void drawSplash(Context ctx, GL10 gl1)
 	{
+		Logger.v(this, "Game commanded to draw the splash screen");
 		float verts[] = {
 			-1.0f, 1.0f, 0.0f,
 			1.0f,  1.0f, 0.0f,
@@ -362,10 +364,12 @@ public class GLTronGame
 		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		
+		Logger.v(this,"Splash Screen creation complete");
 	}
 	
 	public void updateScreenSize(int width, int height)
 	{
+		Logger.v(this, "Game commanded to update the Screen Size");
 		if(Visual == null)
 		{
 			Visual = new Video(width, height);
@@ -374,14 +378,16 @@ public class GLTronGame
 		{
 			Visual.SetWidthHeight(width, height);
 		}
-		
-
+		Logger.v(this, "Screen Update complete");
 	}
 	
 	public void addTouchEvent(float x, float y)
 	{
 		if(boLoading)
+		{
+			Logger.i(this, "Please be patient, Game is still Loading");
 			return;
+		}
 		
 		if(Players[OWN_PLAYER].getSpeed() > 0.0f)
 		{
@@ -476,6 +482,7 @@ public class GLTronGame
 	
 	private void initWalls()
 	{
+		Logger.v(this, "Initializing the walls");
 		float raw[][] = {
 				{0.0f, 0.0f, 1.0f, 0.0f },
 				{ 1.0f, 0.0f, 0.0f, 1.0f },
@@ -495,6 +502,7 @@ public class GLTronGame
 			Walls[j].vDirection.v[0] = raw[j][2] * width;
 			Walls[j].vDirection.v[1] = raw[j][3] * height;
 		}
+		Logger.v(this, "Walls in place");
 	}
 
 	
