@@ -28,11 +28,12 @@ import android.preference.PreferenceActivity;
 import com.glTron.logging.Logger;
 
 public class Preferences extends PreferenceActivity {
-	 @Override
-	    protected void onCreate(Bundle savedInstanceState) {
-	        // TODO Auto-generated method stub
+	@Override
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 	        super.onCreate(savedInstanceState);
 		Logger.v(this, "Setting up Preferences");
 	        addPreferencesFromResource(R.layout.preferences);
-	    }
+	}
+
 }

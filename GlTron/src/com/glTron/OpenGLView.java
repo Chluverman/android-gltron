@@ -36,21 +36,16 @@ import com.glTron.Game.GLTronGame;
 public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer 
 {
 	
-	//private OpenGLRenderer _renderer;
-	
 	GLTronGame Game;
 	Context mContext;
 	private int frameCount = 0;
 	
-	public OpenGLView(Context context,int width, int height) {
+	public OpenGLView(Context context) 
+	{
 		super(context);
 		Logger.v(this, "View's constructor called");
 
-		Logger.v(this, "Setting up the renderer object");
-		//_renderer = new OpenGLRenderer(context, width, height);
-		//_renderer = new GLSurfaceView.Renderer();
 		setRenderer(this);
-
 		Game = new GLTronGame();
 		mContext = context;
 
