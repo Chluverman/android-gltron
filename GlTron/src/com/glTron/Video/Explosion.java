@@ -24,7 +24,8 @@ package com.glTron.Video;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+//import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 public class Explosion {
 
@@ -72,32 +73,32 @@ public class Explosion {
 		return retVal;
 	}
 	
-	public void Draw(GL10 gl, long GameDeltaTime, GLTexture tex)
+	public void Draw(long GameDeltaTime, GLTexture tex)
 	{
-		gl.glDisable(GL10.GL_LIGHTING);
-		gl.glPushMatrix();
-		gl.glRotatef(90,90,0,1);
-		gl.glTranslatef(0.0f, -0.5f, -0.5f);
-		gl.glColor4f(0.68f, 0.0f, 0.0f, 1.0f);
+		GLES10.glDisable(GLES10.GL_LIGHTING);
+		GLES10.glPushMatrix();
+		GLES10.glRotatef(90,90,0,1);
+		GLES10.glTranslatef(0.0f, -0.5f, -0.5f);
+		GLES10.glColor4f(0.68f, 0.0f, 0.0f, 1.0f);
 		
 		ExplodeTex = tex;
 		
-		drawShockwaves(gl);
+		drawShockwaves();
 		
 		if(Radius < IMPACT_MAX_RADIUS)
 		{
-			drawImpactGlow(gl);
-			drawSpires(gl);
+			drawImpactGlow();
+			drawSpires();
 		}
 		
 		Radius += (GameDeltaTime * IMPACT_RADIUS_DELTA);
 		
-		gl.glPopMatrix();
-		gl.glEnable(GL10.GL_LIGHTING);
+		GLES10.glPopMatrix();
+		GLES10.glEnable(GLES10.GL_LIGHTING);
 
 	}
 	
-	private void drawSpires(GL10 gl)
+	private void drawSpires()
 	{
 		int i;
 		
@@ -132,9 +133,9 @@ public class Explosion {
 		FloatBuffer SpireBuffer;
 		
 		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE);
+		GLES10.glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glBlendFunc(GLES10.GL_ONE, GLES10.GL_ONE);
 		
 		for(i=0; i < NUM_SPIRES;  i++)
 		{
@@ -157,15 +158,15 @@ public class Explosion {
 			TriList[8] = left.v[2];
 			
 			SpireBuffer = GraphicUtils.ConvToFloatBuffer(TriList);
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, SpireBuffer);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 3);
+			GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, SpireBuffer);
+			GLES10.glDrawArrays(GLES10.GL_TRIANGLE_STRIP, 0, 3);
 		}
 		
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
 		
 	}
 	
-	private void drawImpactGlow(GL10 gl)
+	private void drawImpactGlow()
 	{
 		float opacity;
 		float ImpactVertex[] = {
@@ -189,50 +190,50 @@ public class Explosion {
 		
 		opacity = GLOW_START_OPACITY - (Radius / IMPACT_MAX_RADIUS);
 		
-		gl.glPushMatrix();
-		gl.glScalef(Radius, Radius, 1.0f);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, ExplodeTex.getTextureID());
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		GLES10.glPushMatrix();
+		GLES10.glScalef(Radius, Radius, 1.0f);
+		GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, ExplodeTex.getTextureID());
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
 		
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 		
-		gl.glColor4f(GLOW_INTENSITY, GLOW_INTENSITY, GLOW_INTENSITY, opacity);
-		gl.glDepthMask(false);
+		GLES10.glColor4f(GLOW_INTENSITY, GLOW_INTENSITY, GLOW_INTENSITY, opacity);
+		GLES10.glDepthMask(false);
 		
 		ImpactBuffer = GraphicUtils.ConvToFloatBuffer(ImpactVertex);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, ImpactBuffer);
+		GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, ImpactBuffer);
 		TexBuffer = GraphicUtils.ConvToFloatBuffer(TexVertex);
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, TexBuffer);
+		GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, TexBuffer);
 		
-		//gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		gl.glDrawArrays(GL10.GL_TRIANGLES ,0, 6);
+		//GLES10.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		GLES10.glDrawArrays(GLES10.GL_TRIANGLES ,0, 6);
 		
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glDepthMask(true);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glPopMatrix();
+		GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+		GLES10.glDepthMask(true);
+		GLES10.glDisable(GLES10.GL_TEXTURE_2D);
+		GLES10.glPopMatrix();
 	}
 	
-	private void drawShockwaves(GL10 gl)
+	private void drawShockwaves()
 	{
 		int waves;
 		float radius = (Radius * SHOCKWAVE_SPEED);
 		
-		gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		GLES10.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 		
 		for(waves=0; waves<NUM_SHOCKWAVES; waves++)
 		{
 			if(radius > SHOCKWAVE_MIN_RADIUS && radius < SHOCKWAVE_MAX_RADIUS)
 			{
-				drawWave(gl,radius);
+				drawWave(radius);
 			}
 			radius -= SHOCKWAVE_SPACING;
 		}
 	}
 	
-	private void drawWave(GL10 gl,float adj_radius)
+	private void drawWave(float adj_radius)
 	{
 		int i,j,vertex;
 		double angle;
@@ -244,7 +245,7 @@ public class Explosion {
 		float WaveVertex[] = new float[(3*(2*(SHOCKWAVE_SEGMENTS + 1)))];
 		FloatBuffer WaveBuffer;
 		
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
 
 		for(i=0; i < SHOCKWAVE_SEGMENTS; i++)
 		{
@@ -270,11 +271,11 @@ public class Explosion {
 			}
 			
 			WaveBuffer = GraphicUtils.ConvToFloatBuffer(WaveVertex);
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, WaveBuffer);
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, NumberOfIndices);
+			GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, WaveBuffer);
+			GLES10.glDrawArrays(GLES10.GL_TRIANGLE_STRIP, 0, NumberOfIndices);
 			adj_radius += delta_radius;
 		}
 		
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
 	}
 }

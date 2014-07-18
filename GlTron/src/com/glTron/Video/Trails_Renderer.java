@@ -26,7 +26,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+//import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import com.glTron.R;
 import com.glTron.Game.*;
@@ -36,7 +37,7 @@ import android.content.Context;
 public class Trails_Renderer {
 
 	GLTexture Trails;
-	GL10 gl;
+	GLES10 gl;
 	
 	private final float LX = 2.0f;
 	private final float LY = 2.0f;
@@ -51,10 +52,9 @@ public class Trails_Renderer {
 	
 	FloatBuffer shadowFb;
 	
-	public Trails_Renderer(GL10 gl_in, Context context)
+	public Trails_Renderer(Context context)
 	{
-		gl = gl_in;
-		Trails = new GLTexture(gl,context,R.drawable.gltron_traildecal,GL10.GL_REPEAT, GL10.GL_CLAMP_TO_EDGE);
+		Trails = new GLTexture(context,R.drawable.gltron_traildecal,GLES10.GL_REPEAT, GLES10.GL_CLAMP_TO_EDGE);
 		shadowFb = GraphicUtils.ConvToFloatBuffer(shadow_matrix);
 	}
 	
@@ -77,22 +77,22 @@ public class Trails_Renderer {
 			else
 				statesShadow();
 			
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texFb);
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexFb);
-			gl.glNormalPointer(GL10.GL_FLOAT,	0, normalFb);
-			gl.glColorPointer(4, GL10.GL_UNSIGNED_BYTE, 0, colorFb);
+			gl.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, texFb);
+			gl.glVertexPointer(3, GLES10.GL_FLOAT, 0, vertexFb);
+			gl.glNormalPointer(GLES10.GL_FLOAT,	0, normalFb);
+			gl.glColorPointer(4, GLES10.GL_UNSIGNED_BYTE, 0, colorFb);
 	
-			gl.glDrawElements(GL10.GL_TRIANGLES, mesh.iUsed, GL10.GL_UNSIGNED_SHORT, indBb);
+			gl.glDrawElements(GLES10.GL_TRIANGLES, mesh.iUsed, GLES10.GL_UNSIGNED_SHORT, indBb);
 			
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
-			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+			gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+			gl.glDisableClientState(GLES10.GL_NORMAL_ARRAY);
+			gl.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+			gl.glDisableClientState(GLES10.GL_COLOR_ARRAY);
 			
 			statesRestore();
 		}
 
-		gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_REPLACE);
+		gl.glTexEnvx(GLES10.GL_TEXTURE_ENV, GLES10.GL_TEXTURE_ENV_MODE, GLES10.GL_REPLACE);
 		
 	}
 	
@@ -102,67 +102,67 @@ public class Trails_Renderer {
 //        gl.glDisable(GL10.GL_TEXTURE_2D);
 //        gl.glDisable(GL10.GL_LIGHTING);
 
-        gl.glEnable(GL10.GL_STENCIL_TEST);
-		gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
-		gl.glStencilFunc(GL10.GL_GREATER, 1, 1);
+        gl.glEnable(GLES10.GL_STENCIL_TEST);
+		gl.glStencilOp(GLES10.GL_REPLACE, GLES10.GL_REPLACE, GLES10.GL_REPLACE);
+		gl.glStencilFunc(GLES10.GL_GREATER, 1, 1);
 //		gl.glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-		gl.glEnable(GL10.GL_BLEND);
+		gl.glEnable(GLES10.GL_BLEND);
 		gl.glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
 
 		gl.glPushMatrix();
 		gl.glMultMatrixf(shadowFb);
 		
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GLES10.GL_NORMAL_ARRAY);
+		gl.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+        gl.glDisableClientState(GLES10.GL_COLOR_ARRAY);
 		
-        gl.glDisable(GL10.GL_CULL_FACE);
-        gl.glDisable(GL10.GL_TEXTURE_2D);
-        gl.glDisable(GL10.GL_LIGHTING);
+        gl.glDisable(GLES10.GL_CULL_FACE);
+        gl.glDisable(GLES10.GL_TEXTURE_2D);
+        gl.glDisable(GLES10.GL_LIGHTING);
 	}
 	
 	private void statesRestore()
 	{
-		gl.glDisable(GL10.GL_COLOR_MATERIAL);
-		gl.glCullFace(GL10.GL_BACK);
-		gl.glDisable(GL10.GL_CULL_FACE);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glDisable(GL10.GL_BLEND);
-		gl.glEnable(GL10.GL_LIGHTING);
+		gl.glDisable(GLES10.GL_COLOR_MATERIAL);
+		gl.glCullFace(GLES10.GL_BACK);
+		gl.glDisable(GLES10.GL_CULL_FACE);
+		gl.glDisable(GLES10.GL_TEXTURE_2D);
+		gl.glDisable(GLES10.GL_BLEND);
+		gl.glEnable(GLES10.GL_LIGHTING);
 		//gl.glPolygonMode(GL10.GL_FRONT_AND_BACK, GL10.GL_FILL);
-		gl.glDisable(GL10.GL_POLYGON_OFFSET_FILL);
-		gl.glDisable(GL10.GL_STENCIL_TEST);
+		gl.glDisable(GLES10.GL_POLYGON_OFFSET_FILL);
+		gl.glDisable(GLES10.GL_STENCIL_TEST);
 		gl.glPopMatrix();
 	}
 	private void statesNormal()
 	{
-		gl.glEnable(GL10.GL_POLYGON_OFFSET_FILL);
+		gl.glEnable(GLES10.GL_POLYGON_OFFSET_FILL);
 		gl.glPolygonOffset(1,1);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GLES10.GL_NORMAL_ARRAY);
+		gl.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 		//gl.glFrontFace(GL10.GL_CCW);
-		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glEnableClientState(GLES10.GL_COLOR_ARRAY);
 		
-		gl.glDisable(GL10.GL_CULL_FACE);
-		gl.glShadeModel(GL10.GL_SMOOTH);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glDisable(GLES10.GL_CULL_FACE);
+		gl.glShadeModel(GLES10.GL_SMOOTH);
+		gl.glEnable(GLES10.GL_TEXTURE_2D);
 		
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, Trails.getTextureID());
+		gl.glBindTexture(GLES10.GL_TEXTURE_2D, Trails.getTextureID());
 		
-		gl.glTexEnvx(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_DECAL);
+		gl.glTexEnvx(GLES10.GL_TEXTURE_ENV, GLES10.GL_TEXTURE_ENV_MODE, GLES10.GL_DECAL);
 		
 		float black[] = { 0.0f, 0.0f, 0.0f, 1.0f};
 		FloatBuffer fBlack = GraphicUtils.ConvToFloatBuffer(black);
 		
-		gl.glMaterialfv(GL10.GL_FRONT_AND_BACK,GL10. GL_SPECULAR, fBlack);
+		gl.glMaterialfv(GLES10.GL_FRONT_AND_BACK,GLES10. GL_SPECULAR, fBlack);
 
-		gl.glEnable(GL10.GL_COLOR_MATERIAL);
+		gl.glEnable(GLES10.GL_COLOR_MATERIAL);
 		
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GLES10.GL_BLEND);
+		gl.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
 		
 	}
 	
@@ -180,20 +180,20 @@ public class Trails_Renderer {
 		if(trailtopfb == null)
 			trailtopfb = GraphicUtils.ConvToFloatBuffer(trail_top);
 		
-		gl.glEnable(GL10.GL_LINE_SMOOTH);
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glDisable(GL10.GL_LIGHTING);
+		gl.glEnable(GLES10.GL_LINE_SMOOTH);
+		gl.glEnable(GLES10.GL_BLEND);
+		gl.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glDisable(GLES10.GL_LIGHTING);
 		
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GLES10.GL_COLOR_ARRAY);
 	
-		gl.glColorPointer(4, GL10.GL_FLOAT, 0, trailtopfb);
+		gl.glColorPointer(4, GLES10.GL_FLOAT, 0, trailtopfb);
 
 		for(segOffset = 0; segOffset <= trail_offset; segOffset++)
 		{
 			// Dont change alpha based on dist yet
-			gl.glColorPointer(4, GL10.GL_FLOAT, 0, trailtopfb);
+			gl.glColorPointer(4, GLES10.GL_FLOAT, 0, trailtopfb);
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 0.4f);
 			
 			float tempvertex[] =
@@ -209,8 +209,8 @@ public class Trails_Renderer {
 			
 			FloatBuffer fb = GraphicUtils.ConvToFloatBuffer(tempvertex);
 			
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, fb);
-			gl.glDrawArrays(GL10.GL_LINES, 0, 2);
+			gl.glVertexPointer(3, GLES10.GL_FLOAT, 0, fb);
+			gl.glDrawArrays(GLES10.GL_LINES, 0, 2);
 		}
 
 		// TODO: Draw the final segment
@@ -225,9 +225,9 @@ public class Trails_Renderer {
 		
 //		gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		
-		gl.glDisable(GL10.GL_BLEND);
-		gl.glDisable(GL10.GL_LINE_SMOOTH);
-		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glDisable(GLES10.GL_BLEND);
+		gl.glDisable(GLES10.GL_LINE_SMOOTH);
+		gl.glDisableClientState(GLES10.GL_COLOR_ARRAY);
 	}
 	
 }

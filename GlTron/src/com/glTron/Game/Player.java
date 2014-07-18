@@ -24,7 +24,8 @@ package com.glTron.Game;
 
 import java.util.Random;
 
-import javax.microedition.khronos.opengles.GL10;
+//import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.util.Log;
 
@@ -242,27 +243,27 @@ public class Player {
 		}
 	}
 	
-	public void drawCycle(GL10 gl, long curr_time, long time_dt, Lighting Lights, GLTexture ExplodeTex)
+	public void drawCycle(long curr_time, long time_dt, Lighting Lights, GLTexture ExplodeTex)
 	{
-		gl.glPushMatrix();
-		gl.glTranslatef(getXpos(), getYpos(), 0.0f);
+		GLES10.glPushMatrix();
+		GLES10.glTranslatef(getXpos(), getYpos(), 0.0f);
 
-		doCycleRotation(gl,curr_time);
+		doCycleRotation(curr_time);
 
 		//Lights.setupLights(gl, LightType.E_CYCLE_LIGHTS);
 		
-		gl.glEnable(GL10.GL_LIGHTING);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glDepthMask(true);
+		GLES10.glEnable(GLES10.GL_LIGHTING);
+		GLES10.glEnable(GLES10.GL_DEPTH_TEST);
+		GLES10.glDepthMask(true);
 		if(exp_radius == 0.0f)
 		{
-			gl.glEnable(GL10.GL_NORMALIZE);
-			gl.glTranslatef(0.0f, 0.0f, Cycle.GetBBoxSize().v[2] / 2.0f);
-			gl.glEnable(GL10.GL_CULL_FACE);
+			GLES10.glEnable(GLES10.GL_NORMALIZE);
+			GLES10.glTranslatef(0.0f, 0.0f, Cycle.GetBBoxSize().v[2] / 2.0f);
+			GLES10.glEnable(GLES10.GL_CULL_FACE);
 			//gl.glTranslatef((GridSize/2.0f), (GridSize/2.0f), 0.0f);
 			//gl.glTranslatef(_Player._PlayerXpos, _Player._PlayerYpos, 0.0f);
-			Cycle.Draw(gl,ColourSpecular[Player_num],ColourDiffuse[mPlayerColourIndex]);
-			gl.glDisable(GL10.GL_CULL_FACE);
+			Cycle.Draw(ColourSpecular[Player_num],ColourDiffuse[mPlayerColourIndex]);
+			GLES10.glDisable(GLES10.GL_CULL_FACE);
 		}
 		else if(exp_radius < EXP_RADIUS_MAX)
 		{
@@ -271,20 +272,20 @@ public class Player {
 			{
 				if(getExplode().runExplode())
 				{
-					gl.glEnable(GL10.GL_BLEND);
+					GLES10.glEnable(GLES10.GL_BLEND);
 	
-					Explode.Draw(gl, time_dt, ExplodeTex);
+					Explode.Draw( time_dt, ExplodeTex);
 				
-					gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-					gl.glTranslatef(0.0f, 0.0f, Cycle.GetBBoxSize().v[2] / 2.0f);
+					GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
+					GLES10.glTranslatef(0.0f, 0.0f, Cycle.GetBBoxSize().v[2] / 2.0f);
 					//LightBike.Explode(gl, _Player.getExplode().getRadius());
 				}
 			}
 		}
 		
-		gl.glDisable(GL10.GL_BLEND);
-		gl.glDisable(GL10.GL_LIGHTING);
-		gl.glPopMatrix();
+		GLES10.glDisable(GLES10.GL_BLEND);
+		GLES10.glDisable(GLES10.GL_LIGHTING);
+		GLES10.glPopMatrix();
 
 	}
 	
@@ -375,7 +376,7 @@ public class Player {
 		}
 	}
 
-	private void doCycleRotation(GL10 gl, long CurrentTime)
+	private void doCycleRotation(long CurrentTime)
 	{
 		  long time = CurrentTime - TurnTime;
 		  float dirAngle;
@@ -384,7 +385,7 @@ public class Player {
 		  
 		  dirAngle = getDirAngle(time);
 		  
-		  gl.glRotatef(dirAngle, 0.0f, 0.0f, 1.0f);
+		  GLES10.glRotatef(dirAngle, 0.0f, 0.0f, 1.0f);
 		
 		  if((time < TURN_LENGTH) && (LastDirection != Direction))
 		  {
@@ -398,7 +399,7 @@ public class Player {
 				  axis = -1.0f;
 			  }
 			  Angle = (float)Math.sin((Math.PI * time / TURN_LENGTH)) * 25.0f;
-			  gl.glRotatef(Angle, 0.0f, (axis * -1.0f), 0.0f);
+			  GLES10.glRotatef(Angle, 0.0f, (axis * -1.0f), 0.0f);
 		  }
 	}
 

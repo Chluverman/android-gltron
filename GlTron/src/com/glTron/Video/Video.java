@@ -22,7 +22,8 @@
 
 package com.glTron.Video;
 
-import javax.microedition.khronos.opengles.GL10;
+//import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 public class Video {
 
@@ -47,28 +48,20 @@ public class Video {
 		_width = Float.intBitsToFloat(width);
 	}
 	
-	public void rasonly(GL10 gl)
+	public void rasonly()
 	{
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glOrthof(0.0f, (float)_vp_w, 0.0f, (float)_vp_h, 0.0f, 1.0f);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		gl.glViewport(0, 0, _vp_w, _vp_h);
+		GLES10.glMatrixMode(GLES10.GL_PROJECTION);
+		GLES10.glLoadIdentity();
+		GLES10.glOrthof(0.0f, (float)_vp_w, 0.0f, (float)_vp_h, 0.0f, 1.0f);
+		GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+		GLES10.glLoadIdentity();
+		GLES10.glViewport(0, 0, _vp_w, _vp_h);
 	}
 	
-	public void doPerspective(GL10 gl, float GridSize)
+	public void doPerspective(float GridSize)
 	{
 		int w,h;
 		
-//		gl.glMatrixMode(GL10.GL_PROJECTION);
-//		float size = .01f * (float) Math.tan(Math.toRadians(45.0) / 2); 
-//	    float ratio = _width / _height;
-//	    // perspective:
-//	    gl.glFrustumf(-size, size, -size / ratio, size / ratio, 0.01f, 100.0f);
-//		w = Float.floatToIntBits(_width);
-//	    h = Float.floatToIntBits(_height);
-//	    gl.glViewport(0, 0, w, h);
 		
 		float top;
 		float left;
@@ -79,15 +72,15 @@ public class Video {
 		//float fov = 120.0f;
 		float fov = 105.0f;
 		
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
+		GLES10.glMatrixMode(GLES10.GL_PROJECTION);
+		GLES10.glLoadIdentity();
 		top = (float)Math.tan(fov * Math.PI / 360.0f) * (float)znear;
 		left = (float)(((float)-top)*((float)ratio));
-		gl.glFrustumf(left, -left, -top,  top, znear, zfar);
+		GLES10.glFrustumf(left, -left, -top,  top, znear, zfar);
 		
 		w = Float.floatToIntBits(_width);
 	    h = Float.floatToIntBits(_height);
-		gl.glViewport(0, 0, w, h);
+		GLES10.glViewport(0, 0, w, h);
 		
 		
 	}

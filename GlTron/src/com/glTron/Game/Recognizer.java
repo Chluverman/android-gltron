@@ -23,7 +23,8 @@ package com.glTron.Game;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+//import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.util.FloatMath;
 
@@ -77,73 +78,73 @@ public class Recognizer {
 		mAlpha = 0.0f;
 	}
 	
-	public void draw(GL10 gl, Model mesh)
+	public void draw(Model mesh)
 	{
 		Vec p,v;
 		float dirx;
 		
-		gl.glPushMatrix();
+		GLES10.glPushMatrix();
 		
 		p = getPosition(mesh);
 		v = getVelocity();
 		
 		dirx = getAngle(v);
 		
-		gl.glTranslatef(p.v[0], p.v[1], HEIGHT);
-		gl.glRotatef(dirx, 0.0f, 0.0f, 1.0f);
+		GLES10.glTranslatef(p.v[0], p.v[1], HEIGHT);
+		GLES10.glRotatef(dirx, 0.0f, 0.0f, 1.0f);
 		
-		gl.glScalef(scaleFactor, scaleFactor, scaleFactor);
+		GLES10.glScalef(scaleFactor, scaleFactor, scaleFactor);
 		
-		gl.glDisable(GL10.GL_LIGHT0);
-		gl.glDisable(GL10.GL_LIGHT1);
-		gl.glLightfv(GL10.GL_LIGHT2, GL10.GL_SPECULAR, mColour);
-		gl.glEnable(GL10.GL_LIGHT2);
+		GLES10.glDisable(GLES10.GL_LIGHT0);
+		GLES10.glDisable(GLES10.GL_LIGHT1);
+		GLES10.glLightfv(GLES10.GL_LIGHT2, GLES10.GL_SPECULAR, mColour);
+		GLES10.glEnable(GLES10.GL_LIGHT2);
 		
-		gl.glDisable(GL10.GL_BLEND);
-		gl.glEnable(GL10.GL_CULL_FACE);
+		GLES10.glDisable(GLES10.GL_BLEND);
+		GLES10.glEnable(GLES10.GL_CULL_FACE);
 		
-		gl.glEnable(GL10.GL_LIGHTING);
+		GLES10.glEnable(GLES10.GL_LIGHTING);
 		
-		gl.glEnable(GL10.GL_POLYGON_OFFSET_FILL);
-		gl.glPolygonOffset(1.0f, 1.0f);
+		GLES10.glEnable(GLES10.GL_POLYGON_OFFSET_FILL);
+		GLES10.glPolygonOffset(1.0f, 1.0f);
 		
-		gl.glEnable(GL10.GL_NORMALIZE);
-		gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+		GLES10.glEnable(GLES10.GL_NORMALIZE);
+		GLES10.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		
-		mesh.Draw(gl);
+		mesh.Draw();
 		
-		gl.glDisable(GL10.GL_POLYGON_OFFSET_FILL);
-		gl.glDisable(GL10.GL_LIGHT2);
-		gl.glEnable(GL10.GL_LIGHT1);
-		gl.glDisable(GL10.GL_LIGHTING);
+		GLES10.glDisable(GLES10.GL_POLYGON_OFFSET_FILL);
+		GLES10.glDisable(GLES10.GL_LIGHT2);
+		GLES10.glEnable(GLES10.GL_LIGHT1);
+		GLES10.glDisable(GLES10.GL_LIGHTING);
 		
 		// TODO:
 		// Original glTron used to render another model in wireframe mode over the existing recognizer
 		// OpenGL ES does not support this wireframe rendering mode. Need to come up with a replacement
 		
-		gl.glDisable(GL10.GL_CULL_FACE);
+		GLES10.glDisable(GLES10.GL_CULL_FACE);
 		
-		gl.glPopMatrix();
+		GLES10.glPopMatrix();
 		
 		// Draw the shadow
-		gl.glEnable(GL10.GL_STENCIL_TEST);
-		gl.glStencilOp(GL10.GL_REPLACE, GL10.GL_REPLACE, GL10.GL_REPLACE);
-		gl.glStencilFunc(GL10.GL_GREATER, 1, 1);
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glColor4f(0.0f,0.0f,0.0f,0.8f);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES10.glEnable(GLES10.GL_STENCIL_TEST);
+		GLES10.glStencilOp(GLES10.GL_REPLACE, GLES10.GL_REPLACE, GLES10.GL_REPLACE);
+		GLES10.glStencilFunc(GLES10.GL_GREATER, 1, 1);
+		GLES10.glEnable(GLES10.GL_BLEND);
+		GLES10.glColor4f(0.0f,0.0f,0.0f,0.8f);
+		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
 		
-		gl.glPushMatrix();
-		gl.glMultMatrixf(mShadow);
-		gl.glTranslatef(p.v[0], p.v[1], HEIGHT);
-		gl.glRotatef(dirx, 0.0f, 0.0f, 1.0f);
-		gl.glScalef(scaleFactor,scaleFactor,scaleFactor);
-		gl.glEnable(GL10.GL_NORMALIZE);
-		mesh.Draw(gl);
-		gl.glDisable(GL10.GL_STENCIL_TEST);
-		gl.glDisable(GL10.GL_BLEND);
-		gl.glDisable(GL10.GL_CULL_FACE);
-		gl.glPopMatrix();
+		GLES10.glPushMatrix();
+		GLES10.glMultMatrixf(mShadow);
+		GLES10.glTranslatef(p.v[0], p.v[1], HEIGHT);
+		GLES10.glRotatef(dirx, 0.0f, 0.0f, 1.0f);
+		GLES10.glScalef(scaleFactor,scaleFactor,scaleFactor);
+		GLES10.glEnable(GLES10.GL_NORMALIZE);
+		mesh.Draw();
+		GLES10.glDisable(GLES10.GL_STENCIL_TEST);
+		GLES10.glDisable(GLES10.GL_BLEND);
+		GLES10.glDisable(GLES10.GL_CULL_FACE);
+		GLES10.glPopMatrix();
 		
 	}
 	

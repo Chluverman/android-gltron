@@ -24,7 +24,8 @@ package com.glTron.Game;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+//import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import com.glTron.Video.GraphicUtils;
 import com.glTron.Video.Vec;
@@ -272,7 +273,7 @@ public class Camera {
 		playerCamera(PlayerData,CurrentTime,dt);
 	}
 	
-	public void doLookAt(GL10 gl)
+	public void doLookAt()
 	{
 		float m[] = new float[16];
 		Vec Up = new Vec(0.0f, 0.0f, 1.0f);
@@ -306,10 +307,11 @@ public class Camera {
 		m[3*4+3] = 1.0f;
 		
 		FloatBuffer M = GraphicUtils.ConvToFloatBuffer(m);
-		gl.glMultMatrixf(M);
+
+		GLES10.glMultMatrixf(M);
 		
 		// Translate Eye to origin
-		gl.glTranslatef(-_cam.v[0], -_cam.v[1], -_cam.v[2]);
+		GLES10.glTranslatef(-_cam.v[0], -_cam.v[1], -_cam.v[2]);
 	}
 	
 }

@@ -55,14 +55,12 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 	public void onPause()
 	{
 		Logger.v(this, "View Paused");
-		//_renderer.onPause();
 		Game.pauseGame();
 	}
 	
 	public void onResume()
 	{
 		Logger.v(this, "View Resumed");
-		//_renderer.onResume();
 		Game.resumeGame();
 	}
 	
@@ -73,7 +71,6 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 		if(event.getAction() == MotionEvent.ACTION_DOWN) 
 		{
 			Logger.v(this, "Passing the touchevent to the renderer object");
-			//_renderer.onTouch(event.getX(),event.getY());
 			Game.addTouchEvent(event.getX(),event.getY());
 		}
 		
@@ -85,7 +82,7 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 	{
 		Logger.Debug(this, "Surface Created, Do perspective");
 
-		Game.drawSplash(mContext, gl);
+		Game.drawSplash(mContext);
 	}
 	
 	@Override

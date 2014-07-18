@@ -24,7 +24,8 @@ package com.glTron.Game;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+//import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.content.Context;
 import android.os.SystemClock;
@@ -92,7 +93,8 @@ public class GLTronGame
 	HUD tronHUD;
 	
 	Context mContext;
-	GL10 gl;
+	//GL10 gl;
+	GLES10 gl;
 	
 	public Segment Walls[] = 
 	{
@@ -121,7 +123,7 @@ public class GLTronGame
 		SoundManager.addMusic(R.raw.song_revenge_of_cats);
 
 		// Load HUD
-		tronHUD = new HUD(gl,mContext);
+		tronHUD = new HUD(mContext);
 
 		//Load preferences
 		mPrefs = new UserPrefs(mContext);
@@ -133,8 +135,8 @@ public class GLTronGame
 		// Load Models
 		LightBike = new Model(mContext,R.raw.lightcyclehigh);
 		RecognizerModel = new Model(mContext,R.raw.recognizerhigh);
-		World = new WorldGraphics(gl, mContext, mCurrentGridSize);
-		TrailRenderer = new Trails_Renderer(gl,mContext);
+		World = new WorldGraphics(mContext, mCurrentGridSize);
+		TrailRenderer = new Trails_Renderer(mContext);
 
 		for(player = 0; player < mCurrentPlayers; player++)
 		{
@@ -144,14 +146,14 @@ public class GLTronGame
 		mRecognizer = new Recognizer(mCurrentGridSize);
 
 		Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
-		ExplodeTex = new  GLTexture(gl,mContext, R.drawable.gltron_impact);
+		ExplodeTex = new  GLTexture(mContext, R.drawable.gltron_impact);
 
 		ComputerAI.initAI(Walls,Players,mCurrentGridSize);
 
 		// Setup perspective
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-			Visual.doPerspective(gl, mCurrentGridSize);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glMatrixMode(GLES10.GL_MODELVIEW);
+			Visual.doPerspective( mCurrentGridSize);
+		gl.glMatrixMode(GLES10.GL_MODELVIEW);
 
 		// Initialise sounds
 		if(mPrefs.PlayMusic())
@@ -192,14 +194,14 @@ public class GLTronGame
 				// re-init the world
 				initWalls();
 				
-				World = new WorldGraphics(gl, mContext, mCurrentGridSize);
+				World = new WorldGraphics( mContext, mCurrentGridSize);
 
 				ComputerAI.initAI(Walls,Players,mCurrentGridSize);
 
 				// Setup perspective
-				gl.glMatrixMode(GL10.GL_MODELVIEW);
-					Visual.doPerspective(gl, mCurrentGridSize);
-				gl.glMatrixMode(GL10.GL_MODELVIEW);
+				gl.glMatrixMode(GLES10.GL_MODELVIEW);
+					Visual.doPerspective( mCurrentGridSize);
+				gl.glMatrixMode(GLES10.GL_MODELVIEW);
 			}
 			
 			for(plyr = 0; plyr < mPrefs.NumberOfPlayers(); plyr++)
@@ -319,7 +321,7 @@ public class GLTronGame
 		Logger.v(this, "Signal received to resume the game has been processed completly");
 	}
 	
-	public void drawSplash(Context ctx, GL10 gl1)
+	public void drawSplash(Context ctx)
 	{
 		Logger.v(this, "Game commanded to draw the splash screen");
 		float verts[] = {
@@ -336,33 +338,33 @@ public class GLTronGame
 			1.0f, 0.0f
 		};
 
-		gl = gl1;
+		//gl = gl1;
 		mContext = ctx;
 
 		FloatBuffer vertfb = GraphicUtils.ConvToFloatBuffer(verts);
 		FloatBuffer texfb = GraphicUtils.ConvToFloatBuffer(texture);
 
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		gl.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT);
 
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 
 		gl.glLoadIdentity();
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glEnable(GLES10.GL_TEXTURE_2D);
 		if(SplashScreen == null)
-			SplashScreen = new GLTexture(gl,mContext,R.drawable.gltron_bitmap);
+			SplashScreen = new GLTexture(mContext,R.drawable.gltron_bitmap);
 
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, SplashScreen.getTextureID());
+		gl.glBindTexture(GLES10.GL_TEXTURE_2D, SplashScreen.getTextureID());
 
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertfb);
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texfb);
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		gl.glVertexPointer(3, GLES10.GL_FLOAT, 0, vertfb);
+		gl.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, texfb);
+		gl.glDrawArrays(GLES10.GL_TRIANGLE_STRIP, 0, 4);
 		
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GLES10.GL_NORMAL_ARRAY);
+		gl.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 		
 		Logger.v(this,"Splash Screen creation complete");
 	}
@@ -544,40 +546,40 @@ public class GLTronGame
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
 		// Load identity
-		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glMatrixMode(GLES10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		Visual.doPerspective(gl, mCurrentGridSize);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		Visual.doPerspective( mCurrentGridSize);
+		gl.glMatrixMode(GLES10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, Cam.ReturnCamBuffer());
+		gl.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_POSITION, Cam.ReturnCamBuffer());
 
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
-		gl.glEnable(GL10.GL_BLEND);
+		gl.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT | GLES10.GL_STENCIL_BUFFER_BIT);
+		gl.glEnable(GLES10.GL_BLEND);
 
-		Cam.doLookAt(gl);
+		Cam.doLookAt();
 		
-		gl.glDisable(GL10.GL_LIGHTING);
-		gl.glDisable(GL10.GL_BLEND);
+		gl.glDisable(GLES10.GL_LIGHTING);
+		gl.glDisable(GLES10.GL_BLEND);
 		gl.glDepthMask(false);
-		gl.glDisable(GL10.GL_DEPTH_TEST);
+		gl.glDisable(GLES10.GL_DEPTH_TEST);
 		
-		World.drawSkyBox(gl);
-		World.drawFloorTextured(gl);
+		World.drawSkyBox();
+		World.drawFloorTextured();
 		
 		gl.glDepthMask(true);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glEnable(GLES10.GL_DEPTH_TEST);
 
 		if(mPrefs.DrawRecognizer())
-			mRecognizer.draw(gl, RecognizerModel);
+			mRecognizer.draw( RecognizerModel);
 		
-		World.drawWalls(gl);
+		World.drawWalls();
 		
-		Lights.setupLights(gl, LightType.E_WORLD_LIGHTS);
+		Lights.setupLights( LightType.E_WORLD_LIGHTS);
 
 		for(player = 0; player < mCurrentPlayers; player++)
 		{
 			if(player == 0 || Players[player].isVisible(Cam))
-					Players[player].drawCycle(gl, TimeCurrent, TimeDt, Lights, ExplodeTex);
+					Players[player].drawCycle( TimeCurrent, TimeDt, Lights, ExplodeTex);
 			
 			Players[player].drawTrails(TrailRenderer,Cam);
 		}

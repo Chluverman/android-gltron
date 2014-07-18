@@ -25,8 +25,7 @@ package com.glTron.Video;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
-
+import android.opengl.GLES10;
 import android.content.Context;
 
 import com.glTron.R;
@@ -46,14 +45,15 @@ public class WorldGraphics {
 	GLTexture _Walls[];
 	GLTexture _Floor;
 	
-	public WorldGraphics(GL10 gl, Context context, float grid_size)
+	public WorldGraphics(Context context, float grid_size)
 	{
+
 		// Save Grid Size
 		_grid_size = grid_size;
 		
 		initWalls();
 		initSkyBox();
-		loadTextures(gl,context);
+		loadTextures(context);
 		
 		// Setup standard square index and tex buffers
 		// Define indices and tex coords
@@ -73,27 +73,27 @@ public class WorldGraphics {
 		
 	}
 	
-	private void loadTextures(GL10 gl, Context context)
+	private void loadTextures(Context context)
 	{
 		GLTexture skyBoxTextures[] = { 
-				new GLTexture(gl,context, R.drawable.skybox0),
-				new GLTexture(gl,context, R.drawable.skybox1),
-				new GLTexture(gl,context, R.drawable.skybox2),
-				new GLTexture(gl,context, R.drawable.skybox3),
-				new GLTexture(gl,context, R.drawable.skybox4),
-				new GLTexture(gl,context, R.drawable.skybox5) };
+				new GLTexture(context, R.drawable.skybox0),
+				new GLTexture(context, R.drawable.skybox1),
+				new GLTexture(context, R.drawable.skybox2),
+				new GLTexture(context, R.drawable.skybox3),
+				new GLTexture(context, R.drawable.skybox4),
+				new GLTexture(context, R.drawable.skybox5) };
 		
 		_SkyBoxTextures = skyBoxTextures;
 		
 		GLTexture Walltex[] = { 
-				  new GLTexture(gl,context,R.drawable.gltron_wall_1),
-			      new GLTexture(gl,context,R.drawable.gltron_wall_2),
-		    	  new GLTexture(gl,context,R.drawable.gltron_wall_3),
-				  new GLTexture(gl,context,R.drawable.gltron_wall_4) };
+				  new GLTexture(context,R.drawable.gltron_wall_1),
+			      new GLTexture(context,R.drawable.gltron_wall_2),
+		    	  new GLTexture(context,R.drawable.gltron_wall_3),
+				  new GLTexture(context,R.drawable.gltron_wall_4) };
 		
 		_Walls = Walltex;
 
-		_Floor = new GLTexture(gl,context,R.drawable.gltron_floor);
+		_Floor = new GLTexture(context,R.drawable.gltron_floor);
 	}
 	
 	private void initSkyBox()
@@ -155,44 +155,44 @@ public class WorldGraphics {
 		
 	}
 	
-	public void drawWalls(GL10 gl)
+	public void drawWalls()
 	{
 		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		gl.glEnable(GL10.GL_CULL_FACE);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnable(GL10.GL_BLEND);
+		GLES10.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GLES10.glEnable(GLES10.GL_CULL_FACE);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
+		GLES10.glEnable(GLES10.GL_BLEND);
 		
 		for(int Walls=0; Walls<4; Walls++) {
 			
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, _Walls[Walls].getTextureID());
-			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, _WallVertexBuffer[Walls]);
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _TexBuffer);
+			GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, _Walls[Walls].getTextureID());
+			GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+			GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+			GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, _WallVertexBuffer[Walls]);
+			GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, _TexBuffer);
 			//Draw the vertices as triangles, based on the Index Buffer information
-			gl.glDrawElements(GL10.GL_TRIANGLES, _NumOfIndices, GL10.GL_UNSIGNED_BYTE, _IndicesBuffer);
+			GLES10.glDrawElements(GLES10.GL_TRIANGLES, _NumOfIndices, GLES10.GL_UNSIGNED_BYTE, _IndicesBuffer);
 			//Disable the client state before leaving
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+			GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+			GLES10.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 		}
 		
-		gl.glDisable(GL10.GL_CULL_FACE);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glDisable(GL10.GL_BLEND);
+		GLES10.glDisable(GLES10.GL_CULL_FACE);
+		GLES10.glDisable(GLES10.GL_TEXTURE_2D);
+		GLES10.glDisable(GLES10.GL_BLEND);
 		
 	}
 	
-	public void drawFloorTextured(GL10 gl)
+	public void drawFloorTextured()
 	{
 		int i,j,l;
 		
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, _Floor.getTextureID());
+		GLES10.glEnable(GLES10.GL_BLEND);
+		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
+		GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, _Floor.getTextureID());
 		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GLES10.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		l = (int)(_grid_size / 4);
 		
@@ -218,48 +218,48 @@ public class WorldGraphics {
 
 				FloatBuffer VertexBuffer = GraphicUtils.ConvToFloatBuffer(rawVertices);
 				
-				gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-				gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-				//gl.glFrontFace(GL10.GL_CCW);
+				GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+				GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+				//GLES10.glFrontFace(GL10.GL_CCW);
 
-				gl.glVertexPointer(3, GL10.GL_FLOAT, 0, VertexBuffer);
-				gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _FloorTexBuffer);
+				GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, VertexBuffer);
+				GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, _FloorTexBuffer);
 				
 				//Draw the vertices as triangles, based on the Index Buffer information
-				gl.glDrawElements(GL10.GL_TRIANGLES, _NumOfIndices, GL10.GL_UNSIGNED_BYTE, _IndicesBuffer);
+				GLES10.glDrawElements(GLES10.GL_TRIANGLES, _NumOfIndices, GLES10.GL_UNSIGNED_BYTE, _IndicesBuffer);
 				
 				//Disable the client state before leaving
-				gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-				gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+				GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+				GLES10.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 			}
 		}
 	}
 	
-	public void drawSkyBox(GL10 gl)
+	public void drawSkyBox()
 	{
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glDepthMask(false);
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
+		GLES10.glDepthMask(false);
+		GLES10.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 		for(int i=0; i<6; i++)
 		{
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, _SkyBoxTextures[i].getTextureID());
+			GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, _SkyBoxTextures[i].getTextureID());
 			
-			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			//gl.glFrontFace(GL10.GL_CCW);
+			GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+			GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+			//GLES10.glFrontFace(GL10.GL_CCW);
 
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, _SkyBoxVertexBuffers[i]);
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, _TexBuffer);
+			GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, _SkyBoxVertexBuffers[i]);
+			GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, _TexBuffer);
 			
-			gl.glDrawElements(GL10.GL_TRIANGLES, _NumOfIndices, GL10.GL_UNSIGNED_BYTE, _IndicesBuffer);
+			GLES10.glDrawElements(GLES10.GL_TRIANGLES, _NumOfIndices, GLES10.GL_UNSIGNED_BYTE, _IndicesBuffer);
 
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+			GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+			GLES10.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 
 		}
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glDepthMask(true);
+		GLES10.glDisable(GLES10.GL_TEXTURE_2D);
+		GLES10.glDepthMask(true);
 
 	}
 	
