@@ -32,7 +32,6 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
-//import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES10;
 
 import android.content.Context;

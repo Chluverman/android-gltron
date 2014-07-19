@@ -23,7 +23,6 @@ package com.glTron.Game;
 
 import java.nio.FloatBuffer;
 
-//import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES10;
 
 import android.util.FloatMath;

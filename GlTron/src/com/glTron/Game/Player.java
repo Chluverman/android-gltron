@@ -24,7 +24,6 @@ package com.glTron.Game;
 
 import java.util.Random;
 
-//import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES10;
 
 import android.util.Log;
@@ -260,8 +259,6 @@ public class Player {
 			GLES10.glEnable(GLES10.GL_NORMALIZE);
 			GLES10.glTranslatef(0.0f, 0.0f, Cycle.GetBBoxSize().v[2] / 2.0f);
 			GLES10.glEnable(GLES10.GL_CULL_FACE);
-			//gl.glTranslatef((GridSize/2.0f), (GridSize/2.0f), 0.0f);
-			//gl.glTranslatef(_Player._PlayerXpos, _Player._PlayerYpos, 0.0f);
 			Cycle.Draw(ColourSpecular[Player_num],ColourDiffuse[mPlayerColourIndex]);
 			GLES10.glDisable(GLES10.GL_CULL_FACE);
 		}

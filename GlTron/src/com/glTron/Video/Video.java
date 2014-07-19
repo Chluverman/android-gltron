@@ -22,7 +22,6 @@
 
 package com.glTron.Video;
 
-//import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES10;
 
 public class Video {

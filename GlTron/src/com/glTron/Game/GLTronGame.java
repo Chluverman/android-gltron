@@ -24,7 +24,6 @@ package com.glTron.Game;
 
 import java.nio.FloatBuffer;
 
-//import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES10;
 
 import android.content.Context;
@@ -93,8 +92,6 @@ public class GLTronGame
 	HUD tronHUD;
 	
 	Context mContext;
-	//GL10 gl;
-	GLES10 gl;
 	
 	public Segment Walls[] = 
 	{
@@ -151,9 +148,9 @@ public class GLTronGame
 		ComputerAI.initAI(Walls,Players,mCurrentGridSize);
 
 		// Setup perspective
-		gl.glMatrixMode(GLES10.GL_MODELVIEW);
+		GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
 			Visual.doPerspective( mCurrentGridSize);
-		gl.glMatrixMode(GLES10.GL_MODELVIEW);
+		GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
 
 		// Initialise sounds
 		if(mPrefs.PlayMusic())
@@ -199,9 +196,9 @@ public class GLTronGame
 				ComputerAI.initAI(Walls,Players,mCurrentGridSize);
 
 				// Setup perspective
-				gl.glMatrixMode(GLES10.GL_MODELVIEW);
+				GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
 					Visual.doPerspective( mCurrentGridSize);
-				gl.glMatrixMode(GLES10.GL_MODELVIEW);
+				GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
 			}
 			
 			for(plyr = 0; plyr < mPrefs.NumberOfPlayers(); plyr++)
@@ -338,33 +335,32 @@ public class GLTronGame
 			1.0f, 0.0f
 		};
 
-		//gl = gl1;
 		mContext = ctx;
 
 		FloatBuffer vertfb = GraphicUtils.ConvToFloatBuffer(verts);
 		FloatBuffer texfb = GraphicUtils.ConvToFloatBuffer(texture);
 
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		gl.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT);
+		GLES10.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT);
 
-		gl.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 
-		gl.glLoadIdentity();
+		GLES10.glLoadIdentity();
 		
-		gl.glEnable(GLES10.GL_TEXTURE_2D);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
 		if(SplashScreen == null)
 			SplashScreen = new GLTexture(mContext,R.drawable.gltron_bitmap);
 
-		gl.glBindTexture(GLES10.GL_TEXTURE_2D, SplashScreen.getTextureID());
+		GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, SplashScreen.getTextureID());
 
-		gl.glVertexPointer(3, GLES10.GL_FLOAT, 0, vertfb);
-		gl.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, texfb);
-		gl.glDrawArrays(GLES10.GL_TRIANGLE_STRIP, 0, 4);
+		GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, vertfb);
+		GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, texfb);
+		GLES10.glDrawArrays(GLES10.GL_TRIANGLE_STRIP, 0, 4);
 		
-		gl.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GLES10.GL_NORMAL_ARRAY);
-		gl.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_NORMAL_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 		
 		Logger.v(this,"Splash Screen creation complete");
 	}
@@ -543,31 +539,31 @@ public class GLTronGame
 		
 		Cam.doCameraMovement(Players[OWN_PLAYER],TimeCurrent, TimeDt);
 
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GLES10.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
 		// Load identity
-		gl.glMatrixMode(GLES10.GL_PROJECTION);
-		gl.glLoadIdentity();
+		GLES10.glMatrixMode(GLES10.GL_PROJECTION);
+		GLES10.glLoadIdentity();
 		Visual.doPerspective( mCurrentGridSize);
-		gl.glMatrixMode(GLES10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		gl.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_POSITION, Cam.ReturnCamBuffer());
+		GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+		GLES10.glLoadIdentity();
+		GLES10.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_POSITION, Cam.ReturnCamBuffer());
 
-		gl.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT | GLES10.GL_STENCIL_BUFFER_BIT);
-		gl.glEnable(GLES10.GL_BLEND);
+		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT | GLES10.GL_STENCIL_BUFFER_BIT);
+		GLES10.glEnable(GLES10.GL_BLEND);
 
 		Cam.doLookAt();
 		
-		gl.glDisable(GLES10.GL_LIGHTING);
-		gl.glDisable(GLES10.GL_BLEND);
-		gl.glDepthMask(false);
-		gl.glDisable(GLES10.GL_DEPTH_TEST);
+		GLES10.glDisable(GLES10.GL_LIGHTING);
+		GLES10.glDisable(GLES10.GL_BLEND);
+		GLES10.glDepthMask(false);
+		GLES10.glDisable(GLES10.GL_DEPTH_TEST);
 		
 		World.drawSkyBox();
 		World.drawFloorTextured();
 		
-		gl.glDepthMask(true);
-		gl.glEnable(GLES10.GL_DEPTH_TEST);
+		GLES10.glDepthMask(true);
+		GLES10.glEnable(GLES10.GL_DEPTH_TEST);
 
 		if(mPrefs.DrawRecognizer())
 			mRecognizer.draw( RecognizerModel);
