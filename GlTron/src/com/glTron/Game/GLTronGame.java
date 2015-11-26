@@ -24,10 +24,9 @@ package com.glTron.Game;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.content.Context;
-import android.os.Handler;
 import android.os.SystemClock;
 
 import com.glTron.R;
@@ -35,9 +34,11 @@ import com.glTron.Game.Camera.CamType;
 import com.glTron.Sound.SoundManager;
 import com.glTron.Video.*;
 import com.glTron.Video.Lighting.LightType;
+import com.glTron.logging.Logger;
 
 
-public class GLTronGame {
+public class GLTronGame 
+{
 
 	// Define Time data
 	public long TimeLastFrame;
@@ -59,7 +60,7 @@ public class GLTronGame {
 	private Model RecognizerModel;
 	private Video Visual;
 	private WorldGraphics World;
-    private Lighting Lights = new Lighting();
+	private Lighting Lights = new Lighting();
 
 	private Player Players[] = new Player[MAX_PLAYERS];
 	
@@ -90,13 +91,10 @@ public class GLTronGame {
 	// Font
 	HUD tronHUD;
 	
-	// Ads
-	Handler _handler;
-	
 	Context mContext;
-	GL10 gl;
 	
-	public Segment Walls[] = {
+	public Segment Walls[] = 
+	{
 			new Segment(),
 			new Segment(),
 			new Segment(),
@@ -108,82 +106,179 @@ public class GLTronGame {
 	// Preferences
 	public static UserPrefs mPrefs;
 	
-	public GLTronGame()
-	{
-		initWalls();
-	}
-	
 	public void initialiseGame()
 	{
+		Logger.v(this, "Initializing the Game");
 		int player;
-		
-		// Load sounds
-	    SoundManager.getInstance();
-	    SoundManager.initSounds(mContext);
-	    SoundManager.addSound(ENGINE_SOUND, R.raw.game_engine);
-	    SoundManager.addSound(CRASH_SOUND, R.raw.game_crash);
-	    SoundManager.addSound(RECOGNIZER_SOUND, R.raw.game_recognizer);
-	    SoundManager.addMusic(R.raw.song_revenge_of_cats);
 
-	    // Load HUD
-	    tronHUD = new HUD(gl,mContext);
-	    
+		// Load sounds
+		SoundManager.getInstance();
+		SoundManager.initSounds(mContext);
+		SoundManager.addSound(ENGINE_SOUND, R.raw.game_engine);
+		SoundManager.addSound(CRASH_SOUND, R.raw.game_crash);
+		SoundManager.addSound(RECOGNIZER_SOUND, R.raw.game_recognizer);
+		SoundManager.addMusic(R.raw.song_revenge_of_cats);
+
+		// Load HUD
+		tronHUD = new HUD(mContext);
+
 		//Load preferences
-	    mPrefs = new UserPrefs(mContext);
-	    mCurrentPlayers = mPrefs.NumberOfPlayers();
-	    mCurrentGridSize = mPrefs.GridSize();
-	    
-	    initWalls();
-	    
+		mPrefs = new UserPrefs(mContext);
+		mCurrentPlayers = mPrefs.NumberOfPlayers();
+		mCurrentGridSize = mPrefs.GridSize();
+
+		initWalls();
+
 		// Load Models
 		LightBike = new Model(mContext,R.raw.lightcyclehigh);
 		RecognizerModel = new Model(mContext,R.raw.recognizerhigh);
-		World = new WorldGraphics(gl, mContext, mCurrentGridSize);
-		TrailRenderer = new Trails_Renderer(gl,mContext);
-		
+		World = new WorldGraphics(mContext, mCurrentGridSize);
+		TrailRenderer = new Trails_Renderer(mContext);
+
 		for(player = 0; player < mCurrentPlayers; player++)
 		{
 			Players[player] = new Player(player, mCurrentGridSize, LightBike, tronHUD);
 		}
-		
+
 		mRecognizer = new Recognizer(mCurrentGridSize);
-		
+
 		Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
-		ExplodeTex = new  GLTexture(gl,mContext, R.drawable.gltron_impact);
+		ExplodeTex = new  GLTexture(mContext, R.drawable.gltron_impact);
 
 		ComputerAI.initAI(Walls,Players,mCurrentGridSize);
 
 		// Setup perspective
-	    gl.glMatrixMode(GL10.GL_MODELVIEW);
-		Visual.doPerspective(gl, mCurrentGridSize);
-	    gl.glMatrixMode(GL10.GL_MODELVIEW);
+		GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+			Visual.doPerspective( mCurrentGridSize);
+		GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
 
-	    // Initialise sounds
-	    if(mPrefs.PlayMusic())
-	    	SoundManager.playMusic(true);
-	    if(mPrefs.PlaySFX())
-	    	SoundManager.playSoundLoop(RECOGNIZER_SOUND, 1.0f);
-	    
+		// Initialise sounds
+		if(mPrefs.PlayMusic())
+			SoundManager.playMusic(true);
+		if(mPrefs.PlaySFX())
+			SoundManager.playSoundLoop(RECOGNIZER_SOUND, 1.0f);
+
 		ResetTime();
 
 		boLoading = false;
+		Logger.v(this, "Game Initialized Successfully");
 	}
 
-	public void setUI_Handler(Handler handler)
+	public void RunGame()
 	{
-		_handler = handler;
+		int plyr;
+		
+		UpdateTime();
+		ComputerAI.updateTime(TimeDt, TimeCurrent);
+		
+		if(boProcessInput)
+		{
+			Players[OWN_PLAYER].doTurn(inputDirection, TimeCurrent);
+			mEngineSoundModifier = 1.3f;
+			boProcessInput = false;
+		}
+		
+		if(boProcessReset)
+		{
+			// refresh preferences
+			mPrefs.ReloadPrefs();
+			mCurrentPlayers = mPrefs.NumberOfPlayers();
+			
+			if(mPrefs.GridSize() != mCurrentGridSize)
+			{
+				mCurrentGridSize = mPrefs.GridSize();
+				
+				// re-init the world
+				initWalls();
+				
+				World = new WorldGraphics( mContext, mCurrentGridSize);
+
+				ComputerAI.initAI(Walls,Players,mCurrentGridSize);
+
+				// Setup perspective
+				GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+					Visual.doPerspective( mCurrentGridSize);
+				GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+			}
+			
+			for(plyr = 0; plyr < mPrefs.NumberOfPlayers(); plyr++)
+			{
+				Players[plyr] = new Player(plyr, mCurrentGridSize, LightBike, tronHUD);
+				Players[plyr].setSpeed(mPrefs.Speed());
+			}
+			
+			mRecognizer = new Recognizer(mCurrentGridSize);
+			
+			tronHUD.resetConsole();
+			Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
+			
+			SoundManager.stopSound(ENGINE_SOUND); // ensure sound is stopped before playing again.
+			SoundManager.stopSound(RECOGNIZER_SOUND);
+			
+			tronHUD.displayInstr(true);
+			
+			if(mPrefs.PlaySFX())
+				SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
+			
+			boInitialState = true;
+			boProcessReset = false;
+		}
+		
+		// round robin AI to speed up frame time
+		if(Players[aiCount].getTrailHeight() == Players[aiCount].TRAIL_HEIGHT)
+		{
+			ComputerAI.doComputer(aiCount, OWN_PLAYER);
+		}
+    
+    	// Manage sounds
+		if(Players[OWN_PLAYER].getSpeed() == 0.0f)
+		{
+			SoundManager.stopSound(ENGINE_SOUND);
+			mEngineStartTime = 0;
+			mEngineSoundModifier = 1.0f;
+		}
+		else if(!boInitialState)
+		{
+			if(mPrefs.PlaySFX())
+			{
+				if(mEngineSoundModifier < 1.5f)
+				{
+					if(mEngineStartTime != 0)
+					{
+						if((TimeCurrent + 1000) > mEngineStartTime)
+						{
+							mEngineSoundModifier += 0.01f;
+							SoundManager.changeRate(ENGINE_SOUND, mEngineSoundModifier);
+						}
+					}
+				}
+			}
+		}
+
+		mEngineStartTime = TimeCurrent;
+
+		aiCount++;
+    	
+		if(aiCount > (mCurrentPlayers - 1))
+			aiCount = 1;
+		
+		RenderGame();
 	}
+
 	
 	// hooks for android pausing thread
 	public void pauseGame()
 	{
+		Logger.v(this, "Signal received to pause the game");
 		SoundManager.getInstance();
-    	SoundManager.globalPauseSound();
+		SoundManager.globalPauseSound();
+		Logger.v(this, "Signal received to pause the game has been processed");
 	}
 	
 	// hooks for android resuming thread
 	public void resumeGame()
 	{
+		Logger.v(this, "Signal received to resume the game");
 		SoundManager.getInstance();
 		SoundManager.globalResumeSound();
 
@@ -211,19 +306,21 @@ public class GLTronGame {
 				SoundManager.stopMusic();
 			
 			SoundManager.stopSound(ENGINE_SOUND);
-			if(mPrefs.PlaySFX()) {
+
+			if(mPrefs.PlaySFX()) 
 				SoundManager.playSoundLoop(ENGINE_SOUND,mEngineSoundModifier);
-			}
 			else
 				SoundManager.stopSound(ENGINE_SOUND);
 			
 			
 			ResetTime();
 		}
+		Logger.v(this, "Signal received to resume the game has been processed completly");
 	}
 	
-	public void drawSplash(Context ctx, GL10 gl1)
+	public void drawSplash(Context ctx)
 	{
+		Logger.v(this, "Game commanded to draw the splash screen");
 		float verts[] = {
 			-1.0f, 1.0f, 0.0f,
 			1.0f,  1.0f, 0.0f,
@@ -238,38 +335,39 @@ public class GLTronGame {
 			1.0f, 0.0f
 		};
 
-		gl = gl1;
 		mContext = ctx;
 
 		FloatBuffer vertfb = GraphicUtils.ConvToFloatBuffer(verts);
 		FloatBuffer texfb = GraphicUtils.ConvToFloatBuffer(texture);
 
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		GLES10.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT);
 
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 
-		gl.glLoadIdentity();
+		GLES10.glLoadIdentity();
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
 		if(SplashScreen == null)
-			SplashScreen = new GLTexture(gl,mContext,R.drawable.gltron_bitmap);
+			SplashScreen = new GLTexture(mContext,R.drawable.gltron_bitmap);
 
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, SplashScreen.getTextureID());
+		GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, SplashScreen.getTextureID());
 
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertfb);
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texfb);
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, vertfb);
+		GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, texfb);
+		GLES10.glDrawArrays(GLES10.GL_TRIANGLE_STRIP, 0, 4);
 		
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_NORMAL_ARRAY);
+		GLES10.glDisableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 		
+		Logger.v(this,"Splash Screen creation complete");
 	}
 	
 	public void updateScreenSize(int width, int height)
 	{
+		Logger.v(this, "Game commanded to update the Screen Size");
 		if(Visual == null)
 		{
 			Visual = new Video(width, height);
@@ -278,14 +376,16 @@ public class GLTronGame {
 		{
 			Visual.SetWidthHeight(width, height);
 		}
-		
-
+		Logger.v(this, "Screen Update complete");
 	}
 	
 	public void addTouchEvent(float x, float y)
 	{
 		if(boLoading)
+		{
+			Logger.i(this, "Please be patient, Game is still Loading");
 			return;
+		}
 		
 		if(Players[OWN_PLAYER].getSpeed() > 0.0f)
 		{
@@ -327,107 +427,6 @@ public class GLTronGame {
 		}
 	}
 	
-	public void RunGame()
-	{
-		int plyr;
-		
-		UpdateTime();
-		ComputerAI.updateTime(TimeDt, TimeCurrent);
-		
-		if(boProcessInput)
-		{
-			Players[OWN_PLAYER].doTurn(inputDirection, TimeCurrent);
-			mEngineSoundModifier = 1.3f;
-			boProcessInput = false;
-		}
-		
-		if(boProcessReset)
-		{
-			// refresh preferences
-			mPrefs.ReloadPrefs();
-			mCurrentPlayers = mPrefs.NumberOfPlayers();
-			
-			if(mPrefs.GridSize() != mCurrentGridSize)
-			{
-				mCurrentGridSize = mPrefs.GridSize();
-				
-				// re-init the world
-				initWalls();
-				
-				World = new WorldGraphics(gl, mContext, mCurrentGridSize);
-
-				ComputerAI.initAI(Walls,Players,mCurrentGridSize);
-
-				// Setup perspective
-			    gl.glMatrixMode(GL10.GL_MODELVIEW);
-				Visual.doPerspective(gl, mCurrentGridSize);
-			    gl.glMatrixMode(GL10.GL_MODELVIEW);
-			}
-			
-			for(plyr = 0; plyr < mPrefs.NumberOfPlayers(); plyr++)
-			{
-				Players[plyr] = new Player(plyr, mCurrentGridSize, LightBike, tronHUD);
-				Players[plyr].setSpeed(mPrefs.Speed());
-			}
-			
-			mRecognizer = new Recognizer(mCurrentGridSize);
-			
-			tronHUD.resetConsole();
-			Cam = new Camera(Players[OWN_PLAYER], CamType.E_CAM_TYPE_CIRCLING);
-			
-			SoundManager.stopSound(ENGINE_SOUND); // ensure sound is stopped before playing again.
-			SoundManager.stopSound(RECOGNIZER_SOUND);
-			
-			tronHUD.displayInstr(true);
-			
-			if(mPrefs.PlaySFX())
-				SoundManager.playSoundLoop(ENGINE_SOUND, 1.0f);
-			
-			boInitialState = true;
-			boProcessReset = false;
-		}
-		
-		// round robin AI to speed up frame time
-    	if(Players[aiCount].getTrailHeight() == Players[aiCount].TRAIL_HEIGHT)
-		{
-			ComputerAI.doComputer(aiCount, OWN_PLAYER);
-		}
-    
-    	// Manage sounds
-    	if(Players[OWN_PLAYER].getSpeed() == 0.0f)
-    	{
-			SoundManager.stopSound(ENGINE_SOUND);
-			mEngineStartTime = 0;
-			mEngineSoundModifier = 1.0f;
-    	}
-    	else if(!boInitialState)
-    	{
-    		if(mPrefs.PlaySFX())
-    		{
-	    		if(mEngineSoundModifier < 1.5f)
-	    		{
-	    			if(mEngineStartTime != 0)
-	    			{
-	    				if((TimeCurrent + 1000) > mEngineStartTime)
-	    				{
-	    					mEngineSoundModifier += 0.01f;
-	    					SoundManager.changeRate(ENGINE_SOUND, mEngineSoundModifier);
-	    				}
-	    			}
-	    		}
-    		}
-    	}
-
-		mEngineStartTime = TimeCurrent;
-
-    	aiCount++;
-    	
-    	if(aiCount > (mCurrentPlayers - 1))
-    		aiCount = 1;
-		
-		RenderGame();
-	}
-
 	// DT smoothing experiment
 	private final int MAX_SAMPLES = 20;
 	private long DtHist[] = new long[MAX_SAMPLES];
@@ -481,6 +480,7 @@ public class GLTronGame {
 	
 	private void initWalls()
 	{
+		Logger.v(this, "Initializing the walls");
 		float raw[][] = {
 				{0.0f, 0.0f, 1.0f, 0.0f },
 				{ 1.0f, 0.0f, 0.0f, 1.0f },
@@ -500,6 +500,7 @@ public class GLTronGame {
 			Walls[j].vDirection.v[0] = raw[j][2] * width;
 			Walls[j].vDirection.v[1] = raw[j][3] * height;
 		}
+		Logger.v(this, "Walls in place");
 	}
 
 	
@@ -538,43 +539,43 @@ public class GLTronGame {
 		
 		Cam.doCameraMovement(Players[OWN_PLAYER],TimeCurrent, TimeDt);
 
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GLES10.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
 		// Load identity
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		Visual.doPerspective(gl, mCurrentGridSize);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, Cam.ReturnCamBuffer());
+		GLES10.glMatrixMode(GLES10.GL_PROJECTION);
+		GLES10.glLoadIdentity();
+		Visual.doPerspective( mCurrentGridSize);
+		GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+		GLES10.glLoadIdentity();
+		GLES10.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_POSITION, Cam.ReturnCamBuffer());
 
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT | GL10.GL_STENCIL_BUFFER_BIT);
-		gl.glEnable(GL10.GL_BLEND);
+		GLES10.glClear(GLES10.GL_COLOR_BUFFER_BIT | GLES10.GL_DEPTH_BUFFER_BIT | GLES10.GL_STENCIL_BUFFER_BIT);
+		GLES10.glEnable(GLES10.GL_BLEND);
 
-		Cam.doLookAt(gl);
+		Cam.doLookAt();
 		
-		gl.glDisable(GL10.GL_LIGHTING);
-		gl.glDisable(GL10.GL_BLEND);
-		gl.glDepthMask(false);
-		gl.glDisable(GL10.GL_DEPTH_TEST);
+		GLES10.glDisable(GLES10.GL_LIGHTING);
+		GLES10.glDisable(GLES10.GL_BLEND);
+		GLES10.glDepthMask(false);
+		GLES10.glDisable(GLES10.GL_DEPTH_TEST);
 		
-		World.drawSkyBox(gl);
-		World.drawFloorTextured(gl);
+		World.drawSkyBox();
+		World.drawFloorTextured();
 		
-		gl.glDepthMask(true);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
+		GLES10.glDepthMask(true);
+		GLES10.glEnable(GLES10.GL_DEPTH_TEST);
 
 		if(mPrefs.DrawRecognizer())
-			mRecognizer.draw(gl, RecognizerModel);
+			mRecognizer.draw( RecognizerModel);
 		
-		World.drawWalls(gl);
+		World.drawWalls();
 		
-		Lights.setupLights(gl, LightType.E_WORLD_LIGHTS);
+		Lights.setupLights( LightType.E_WORLD_LIGHTS);
 
 		for(player = 0; player < mCurrentPlayers; player++)
 		{
 			if(player == 0 || Players[player].isVisible(Cam))
-					Players[player].drawCycle(gl, TimeCurrent, TimeDt, Lights, ExplodeTex);
+					Players[player].drawCycle( TimeCurrent, TimeDt, Lights, ExplodeTex);
 			
 			Players[player].drawTrails(TrailRenderer,Cam);
 		}

@@ -1,8 +1,8 @@
 /*
- * Copyright © 2012 Iain Churcher
- * Copyright © 2012 Noah NZM Tech
+ * Copyright © 2012 Ravi Agarwal (flide)
  *
- * Based on GLtron by Andreas Umbach (www.gltron.org)
+ * Based on Android port of GLtron by Iain Churcher and original source code can be found at :
+ * https://github.com/Chluverman/android-gltron.git
  *
  * This file is part of GL TRON.
  *
@@ -25,11 +25,15 @@ package com.glTron;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
+import com.glTron.logging.Logger;
+
 public class Preferences extends PreferenceActivity {
-	 @Override
-	    protected void onCreate(Bundle savedInstanceState) {
-	        // TODO Auto-generated method stub
+	@Override
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 	        super.onCreate(savedInstanceState);
+		Logger.v(this, "Setting up Preferences");
 	        addPreferencesFromResource(R.layout.preferences);
-	    }
+	}
+
 }

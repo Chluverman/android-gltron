@@ -22,48 +22,89 @@
 
 package com.glTron;
 
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.view.MotionEvent;
 
-public class OpenGLView extends GLSurfaceView {
+import com.glTron.logging.Logger;
+import com.glTron.Game.GLTronGame;
+
+public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer 
+{
 	
-	private OpenGLRenderer _renderer;
+	GLTronGame Game;
+	Context mContext;
+	private int frameCount = 0;
 	
-	private float _x = 0;
-	private float _y = 0;
-	
-	public OpenGLView(Context context,int width, int height) {
-		super(context);
-		_renderer = new OpenGLRenderer(context, width, height);
-		setRenderer(_renderer);
-	}
-	
-	public void setUI_Handler(Handler handler)
+	public OpenGLView(Context context) 
 	{
-		_renderer.setUI_Handler(handler);
+		super(context);
+		Logger.v(this, "View's constructor called");
+
+		setRenderer(this);
+		Game = new GLTronGame();
+		mContext = context;
+
+		Logger.v(this, "All set for View");
 	}
 	
 	public void onPause()
 	{
-		_renderer.onPause();
+		Logger.v(this, "View Paused");
+		Game.pauseGame();
 	}
 	
 	public void onResume()
 	{
-		_renderer.onResume();
+		Logger.v(this, "View Resumed");
+		Game.resumeGame();
 	}
 	
-	public boolean onTouchEvent(final MotionEvent event) {
+	public boolean onTouchEvent(final MotionEvent event) 
+	{
+		Logger.v(this, "Touch Event detected at (x , y) : " + event.getX() + event.getY());
 
-		if(event.getAction() == MotionEvent.ACTION_DOWN) {
-			_x = event.getX();
-			_y = event.getY();
-			_renderer.onTouch(_x, _y);
-			
+		if(event.getAction() == MotionEvent.ACTION_DOWN) 
+		{
+			Logger.v(this, "Passing the touchevent to the renderer object");
+			Game.addTouchEvent(event.getX(),event.getY());
 		}
 		
 		return true;
+	}
+
+	@Override
+	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
+	{
+		Logger.Debug(this, "Surface Created, Do perspective");
+
+		Game.drawSplash(mContext);
+	}
+	
+	@Override
+	public void onSurfaceChanged(GL10 gl, int w, int h) 
+	{
+		Logger.Debug(this, "Surface changed, Update the game screen");
+		Game.updateScreenSize(w, h);
+	}
+	
+	@Override
+	public void onDrawFrame(GL10 gl) 
+	{
+		if(frameCount == 1)
+		{ 
+			Logger.v(this, "Drawing the first frame for the game");
+			Game.initialiseGame(); 
+		}
+		else if(frameCount > 1) 
+		{ 
+			Game.RunGame(); 
+		}
+
+		frameCount++;
 	}
 }

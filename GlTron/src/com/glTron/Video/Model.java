@@ -32,7 +32,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.content.Context;
 import android.util.Log;
@@ -281,38 +281,38 @@ public class Model {
 		
 	}
 
-	public void Draw(GL10 gl, float ambient_color[], float diffuse_color[])
+	public void Draw(float ambient_color[], float diffuse_color[])
 	{
 		mMaterials.SetMaterialColour("Hull", ColourType.E_AMBIENT, ambient_color);
 		mMaterials.SetMaterialColour("Hull", ColourType.E_DIFFUSE, diffuse_color);
-		Draw(gl);
+		Draw();
 	}
 	
-	public void Draw(GL10 gl)
+	public void Draw()
 	{
 		int MaterialCount = mMaterials.GetNumber();
 		
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mVertexBuffer);
-		gl.glNormalPointer(GL10.GL_FLOAT, 0, mNormalBuffer);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_NORMAL_ARRAY);
+		GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, mVertexBuffer);
+		GLES10.glNormalPointer(GLES10.GL_FLOAT, 0, mNormalBuffer);
 
 		for(int i=0; i<MaterialCount;i++) {
 			if(mIndicesBuffer[i].capacity() > 0) {
 
-				gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, mMaterials.GetAmbient(i));
-				gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, mMaterials.GetDiffuse(i));
-				gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, mMaterials.GetSpecular(i));
-				gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, mMaterials.GetShininess(i));
+				GLES10.glMaterialfv(GLES10.GL_FRONT_AND_BACK, GLES10.GL_AMBIENT, mMaterials.GetAmbient(i));
+				GLES10.glMaterialfv(GLES10.GL_FRONT_AND_BACK, GLES10.GL_DIFFUSE, mMaterials.GetDiffuse(i));
+				GLES10.glMaterialfv(GLES10.GL_FRONT_AND_BACK, GLES10.GL_SPECULAR, mMaterials.GetSpecular(i));
+				GLES10.glMaterialf(GLES10.GL_FRONT_AND_BACK, GLES10.GL_SHININESS, mMaterials.GetShininess(i));
 				
-				gl.glDrawElements(GL10.GL_TRIANGLES, mIndicesBuffer[i].capacity(),
-						GL10.GL_UNSIGNED_SHORT, mIndicesBuffer[i]);
+				GLES10.glDrawElements(GLES10.GL_TRIANGLES, mIndicesBuffer[i].capacity(),
+						GLES10.GL_UNSIGNED_SHORT, mIndicesBuffer[i]);
 			}
 		}
 		
 	}
 	
-	public void Explode(GL10 gl, float radius)
+	public void Explode(float radius)
 	{
 		int i,j,k;
 		
@@ -337,15 +337,15 @@ public class Model {
 			    { -0.04f, 0.04f, 0.02f }
 		};
 		
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_NORMAL_ARRAY);
 		
 		for(i = 0; i <  mMaterials.GetNumber(); i++)
 		{
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, mMaterials.GetAmbient(i));
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, mMaterials.GetDiffuse(i));
-			gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, mMaterials.GetSpecular(i));
-			gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, mMaterials.GetShininess(i));
+			GLES10.glMaterialfv(GLES10.GL_FRONT_AND_BACK, GLES10.GL_AMBIENT, mMaterials.GetAmbient(i));
+			GLES10.glMaterialfv(GLES10.GL_FRONT_AND_BACK, GLES10.GL_DIFFUSE, mMaterials.GetDiffuse(i));
+			GLES10.glMaterialfv(GLES10.GL_FRONT_AND_BACK, GLES10.GL_SPECULAR, mMaterials.GetSpecular(i));
+			GLES10.glMaterialf(GLES10.GL_FRONT_AND_BACK, GLES10.GL_SHININESS, mMaterials.GetShininess(i));
 			
 			for(j=0; j < (mIndicesBuffer[i].capacity() / 3); j++)
 			{
@@ -355,8 +355,8 @@ public class Model {
 				normal[1] = mNormalBuffer.get((3 * indices) + 1);
 				normal[2] = mNormalBuffer.get((3 * indices) + 2);
 						
-				gl.glPushMatrix();
-				gl.glTranslatef(
+				GLES10.glPushMatrix();
+				GLES10.glTranslatef(
 						radius * (normal[0] + vectors[j % EXP_VECTORS][0]),
 						radius * (normal[1] + vectors[j % EXP_VECTORS][1]),
 						Math.abs(radius * (normal[2] + vectors[j % EXP_VECTORS][2])) );
@@ -377,11 +377,11 @@ public class Model {
 					
 					Vertex = GraphicUtils.ConvToFloatBuffer(vertex);
 					
-					gl.glVertexPointer(3, GL10.GL_FLOAT, 0, Vertex);
-					gl.glNormalPointer(GL10.GL_FLOAT, 0, Normals);
-					gl.glDrawArrays(GL10.GL_TRIANGLES, 0, 3);
+					GLES10.glVertexPointer(3, GLES10.GL_FLOAT, 0, Vertex);
+					GLES10.glNormalPointer(GLES10.GL_FLOAT, 0, Normals);
+					GLES10.glDrawArrays(GLES10.GL_TRIANGLES, 0, 3);
 				}
-				gl.glPopMatrix();
+				GLES10.glPopMatrix();
 			}
 		}
 	}

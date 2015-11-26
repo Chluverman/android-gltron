@@ -22,7 +22,7 @@
 
 package com.glTron.Video;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,36 +40,37 @@ public class GLTexture {
 	
 	public int DebugType;
 	
-	public GLTexture(GL10 gl, Context context, int resource)
+	public GLTexture(Context context, int resource)
 	{
-		WrapS = GL10.GL_REPEAT;
-		WrapT = GL10.GL_REPEAT;
+		WrapS = GLES10.GL_REPEAT;
+		WrapT = GLES10.GL_REPEAT;
 		_texID = new int[1];
-		loadTexture(gl,context,resource);
+		loadTexture(context,resource);
 	}
 
-	public GLTexture(GL10 gl, Context context, int resource, int wrap_s, int wrap_t)
+	public GLTexture(Context context, int resource, int wrap_s, int wrap_t)
 	{
 		WrapS = wrap_s;
 		WrapT = wrap_t;
 		_texID = new int[1];
-		loadTexture(gl,context,resource);
+		loadTexture(context,resource);
 	}
 	
-	public GLTexture(GL10 gl, Context context, int resource, int wrap_s, int wrap_t, boolean mipMap)
+	public GLTexture(Context context, int resource, int wrap_s, int wrap_t, boolean mipMap)
 	{
 		WrapS = wrap_s;
 		WrapT = wrap_t;
 		boGenMipMap = mipMap;
 		_texID = new int[1];
-		loadTexture(gl,context,resource);
+		loadTexture(context,resource);
 	}
 
 	// Will load a texture out of a drawable resource file, and return an OpenGL texture ID:
-	private void loadTexture(GL10 gl, Context context, int resource) {
+	private void loadTexture(Context context, int resource) 
+	{
 	    
 	    // In which ID will we be storing this texture?
-		gl.glGenTextures(1, _texID, 0);
+		GLES10.glGenTextures(1, _texID, 0);
 	    
 	    // We need to flip the textures vertically:
 	    Matrix flip = new Matrix();
@@ -85,21 +86,21 @@ public class GLTexture {
 	    Bitmap bmp = Bitmap.createBitmap(temp, 0, 0, temp.getWidth(), temp.getHeight(), flip, true);
 	    temp.recycle();
 	    
-	    gl.glBindTexture(GL10.GL_TEXTURE_2D, _texID[0]);
+	    GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, _texID[0]);
 	    
 	    // Set all of our texture parameters:
 	    if(boGenMipMap)
 	    {
-	    	gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR_MIPMAP_NEAREST);
-	    	gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR_MIPMAP_NEAREST);
+	    	GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_MIN_FILTER, GLES10.GL_LINEAR_MIPMAP_NEAREST);
+	    	GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_MAG_FILTER, GLES10.GL_LINEAR_MIPMAP_NEAREST);
 	    }
 	    else
 	    {
-	    	gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-	    	gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+	    	GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_MIN_FILTER, GLES10.GL_LINEAR);
+	    	GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_MAG_FILTER, GLES10.GL_LINEAR);
 	    }
-	    gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, WrapS);
-	    gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, WrapT);
+	    GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_WRAP_S, WrapS);
+	    GLES10.glTexParameterf(GLES10.GL_TEXTURE_2D, GLES10.GL_TEXTURE_WRAP_T, WrapT);
 
 	    DebugType = GLUtils.getInternalFormat(bmp);
 	    
@@ -108,7 +109,7 @@ public class GLTexture {
 	    {
 		    for(int level=0, height = bmp.getHeight(), width = bmp.getWidth(); true; level++) {
 		        // Push the bitmap onto the GPU:
-		        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, level, bmp, 0);
+		        GLUtils.texImage2D(GLES10.GL_TEXTURE_2D, level, bmp, 0);
 		        
 		        // We need to stop when the texture is 1x1:
 		        if(height==1 && width==1) break;
@@ -125,7 +126,7 @@ public class GLTexture {
 	    }
 	    else
 	    {
-	    	GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bmp, 0);
+	    	GLUtils.texImage2D(GLES10.GL_TEXTURE_2D, 0, bmp, 0);
 	    }
 	    
 	    bmp.recycle();

@@ -24,7 +24,7 @@ package com.glTron.Video;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.content.Context;
 
@@ -36,39 +36,38 @@ public class Font {
 	public int _lower;
 	public int _upper;
 	
-	private GL10 gl;
+	private GLES10 gl;
 	
 	// Hard code to only 2 textures as thats
 	// what both fonts use in the default art pack
 	private GLTexture Tex1;
 	private GLTexture Tex2;
 	
-	public Font(GL10 gl1, Context context, int tex1, int tex2)
+	public Font(Context context, int tex1, int tex2)
 	{
-		gl = gl1;
-		Tex1 = new GLTexture(gl,context,tex1,GL10.GL_CLAMP_TO_EDGE,GL10.GL_CLAMP_TO_EDGE,false);
-		Tex2 = new GLTexture(gl,context,tex2,GL10.GL_CLAMP_TO_EDGE,GL10.GL_CLAMP_TO_EDGE,false);
+		Tex1 = new GLTexture(context,tex1,GLES10.GL_CLAMP_TO_EDGE,GLES10.GL_CLAMP_TO_EDGE,false);
+		Tex2 = new GLTexture(context,tex2,GLES10.GL_CLAMP_TO_EDGE,GLES10.GL_CLAMP_TO_EDGE,false);
 		//_nTextures = 2;
 	}
 	
 	public void drawText(int x, int y, int size, String text)
 	{
-		gl.glEnable(GL10.GL_BLEND);
-		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		GLES10.glEnable(GLES10.GL_BLEND);
+		GLES10.glBlendFunc(GLES10.GL_SRC_ALPHA, GLES10.GL_ONE_MINUS_SRC_ALPHA);
+		GLES10.glEnable(GLES10.GL_TEXTURE_2D);
 		
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_VERTEX_ARRAY);
+		GLES10.glEnableClientState(GLES10.GL_TEXTURE_COORD_ARRAY);
 		
-		gl.glPushMatrix();
-		gl.glTranslatef(x, y, 0);
-		gl.glScalef(size, size, size);
+		GLES10.glPushMatrix();
+		GLES10.glTranslatef(x, y, 0);
+		GLES10.glScalef(size, size, size);
 		
 		renderString(text);
 		
-		gl.glPopMatrix();
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glDisable(GL10.GL_BLEND);
+		GLES10.glPopMatrix();
+		GLES10.glDisable(GLES10.GL_TEXTURE_2D);
+		GLES10.glDisable(GLES10.GL_BLEND);
 	}
 	
 	private void renderString(String str)
@@ -100,11 +99,11 @@ public class Font {
 			if(tex != bound)
 			{
 				if(tex == 0)
-					gl.glBindTexture(GL10.GL_TEXTURE_2D, Tex1.getTextureID());
+					GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, Tex1.getTextureID());
 				else
-					gl.glBindTexture(GL10.GL_TEXTURE_2D, Tex2.getTextureID());
+					GLES10.glBindTexture(GLES10.GL_TEXTURE_2D, Tex2.getTextureID());
 				
-				gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_MODULATE);
+				GLES10.glTexEnvf(GLES10.GL_TEXTURE_ENV, GLES10.GL_TEXTURE_ENV_MODE, GLES10.GL_MODULATE);
 				bound = tex;
 			}
 			
@@ -147,9 +146,9 @@ public class Font {
 			vertexBuff = GraphicUtils.ConvToFloatBuffer(vertex);
 			texBuff = GraphicUtils.ConvToFloatBuffer(textre);
 			
-			gl.glVertexPointer(2, GL10.GL_FLOAT, 0, vertexBuff);
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texBuff);
-			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, 6);
+			GLES10.glVertexPointer(2, GLES10.GL_FLOAT, 0, vertexBuff);
+			GLES10.glTexCoordPointer(2, GLES10.GL_FLOAT, 0, texBuff);
+			GLES10.glDrawArrays(GLES10.GL_TRIANGLES, 0, 6);
 			
 		}
 	}

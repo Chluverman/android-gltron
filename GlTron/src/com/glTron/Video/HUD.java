@@ -22,7 +22,7 @@
 
 package com.glTron.Video;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 import android.content.Context;
 
@@ -32,7 +32,7 @@ import com.glTron.Game.GLTronGame;
 public class HUD {
 	
 	private Font xenoTron;
-	private GL10 gl;
+	//private GL10 gl;
 	
 	// fps members
 	private final int FPS_HSIZE = 20;
@@ -52,11 +52,10 @@ public class HUD {
 	private boolean dispLoser = false;
 	private boolean dispInst = true;
 	
-	public HUD(GL10 gl1, Context ctx)
+	public HUD(Context ctx)
 	{
-		gl = gl1;
 	    // Load font
-	    xenoTron = new Font(gl,ctx,R.drawable.xenotron0, R.drawable.xenotron1);
+	    xenoTron = new Font(ctx,R.drawable.xenotron0, R.drawable.xenotron1);
 	    // Hard code these values for now allow loadable fonts later...
 	    xenoTron._texwidth = 256;
 	    xenoTron._width = 32;
@@ -70,8 +69,8 @@ public class HUD {
 	public void draw(Video Visual, long dt, int plyrScore)
 	{
 		// Draw fps
-		gl.glDisable(GL10.GL_DEPTH_TEST);
-		Visual.rasonly(gl);
+		GLES10.glDisable(GLES10.GL_DEPTH_TEST);
+		Visual.rasonly();
 		
 		if(GLTronGame.mPrefs.DrawFPS())
 			drawFPS(Visual,dt);
@@ -142,7 +141,7 @@ public class HUD {
 		sb.append("Score: ");
 		sb.append(score);
 		
-		gl.glColor4f(1.0f, 1.0f, 0.2f, 1.0f);
+		GLES10.glColor4f(1.0f, 1.0f, 0.2f, 1.0f);
 		xenoTron.drawText(5, 5, 32, sb.toString());
 	}
 	
@@ -176,7 +175,7 @@ public class HUD {
 			str1 = "Tap screen to Start";
 			str2 = "Press device menu key for settings";
 			
-			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			GLES10.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			
 			xenoTron.drawText(
 					5,
@@ -210,7 +209,7 @@ public class HUD {
 				while(length * size > Visual._vp_w / 2 - 25)
 					size--;
 				
-				gl.glColor4f(1.0f, 0.4f, 0.2f, 1.0f);
+				GLES10.glColor4f(1.0f, 0.4f, 0.2f, 1.0f);
 				xenoTron.drawText(25, Visual.GetHeight() - 20 * (i + 1), size, consoleBuff[index]);
 			}
 		}
@@ -255,7 +254,7 @@ public class HUD {
 		sb.append("FPS: ");
 		sb.append(fps_avg);
 		
-		gl.glColor4f(1.0f, 0.4f, 0.2f, 1.0f);
+		GLES10.glColor4f(1.0f, 0.4f, 0.2f, 1.0f);
 		xenoTron.drawText(Visual.GetWidth() - 280, Visual.GetHeight() - 30, 30, sb.toString());
 	}
 }

@@ -24,7 +24,7 @@ package com.glTron.Video;
 
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES10;
 
 public class Lighting {
 
@@ -63,46 +63,46 @@ public class Lighting {
 		
 	}
 	
-	public void setupLights(GL10 gl, LightType lightType)
+	public void setupLights(LightType lightType)
 	{
 		// Turn off global ambient lighting
-		gl.glLightModelfv(GL10.GL_LIGHT_MODEL_AMBIENT, black_fb);
-		gl.glLightModelf(GL10.GL_LIGHT_MODEL_TWO_SIDE, 1.0f);
+		GLES10.glLightModelfv(GLES10.GL_LIGHT_MODEL_AMBIENT, black_fb);
+		GLES10.glLightModelf(GLES10.GL_LIGHT_MODEL_TWO_SIDE, 1.0f);
 		
 		if(lightType == LightType.E_WORLD_LIGHTS) {
-			gl.glEnable(GL10.GL_LIGHTING);
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-			gl.glPushMatrix();
+			GLES10.glEnable(GLES10.GL_LIGHTING);
+			GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+			GLES10.glPushMatrix();
 			
-			gl.glEnable(GL10.GL_LIGHT0);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, posWorld0_fb);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, gray10_fb);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPECULAR, white_fb);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, white_fb);
+			GLES10.glEnable(GLES10.GL_LIGHT0);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_POSITION, posWorld0_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_AMBIENT, gray10_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_SPECULAR, white_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_DIFFUSE, white_fb);
 			
-			gl.glEnable(GL10.GL_LIGHT1);
-			gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, posWorld1_fb);
-			gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, black_fb);
-			gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_SPECULAR, gray66_fb);
-			gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, gray66_fb);
-			gl.glPopMatrix();
+			GLES10.glEnable(GLES10.GL_LIGHT1);
+			GLES10.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_POSITION, posWorld1_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_AMBIENT, black_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_SPECULAR, gray66_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT1, GLES10.GL_DIFFUSE, gray66_fb);
+			GLES10.glPopMatrix();
 			
 		} else {
-			gl.glEnable(GL10.GL_LIGHTING);
-			gl.glEnable(GL10.GL_LIGHT0);
+			GLES10.glEnable(GLES10.GL_LIGHTING);
+			GLES10.glEnable(GLES10.GL_LIGHT0);
 			
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-			gl.glPushMatrix();
-			gl.glLoadIdentity();
+			GLES10.glMatrixMode(GLES10.GL_MODELVIEW);
+			GLES10.glPushMatrix();
+			GLES10.glLoadIdentity();
 			
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, posCycles_fb);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, gray10_fb);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_SPECULAR, white_fb);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, white_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_POSITION, posCycles_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_AMBIENT, gray10_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_SPECULAR, white_fb);
+			GLES10.glLightfv(GLES10.GL_LIGHT0, GLES10.GL_DIFFUSE, white_fb);
 			
-			gl.glDisable(GL10.GL_LIGHT1);
+			GLES10.glDisable(GLES10.GL_LIGHT1);
 			
-			gl.glPopMatrix();
+			GLES10.glPopMatrix();
 		}
 			
 	}
