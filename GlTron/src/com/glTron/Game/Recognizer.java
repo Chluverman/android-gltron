@@ -30,6 +30,8 @@ import android.util.FloatMath;
 import com.glTron.Video.GraphicUtils;
 import com.glTron.Video.Model;
 import com.glTron.Video.Vec;
+import android.renderscript.*;
+import android.animation.*;
 
 public class Recognizer {
 
@@ -44,7 +46,7 @@ public class Recognizer {
 	/*
 	 * Constants
 	 */
-	private final float xv[] = {0.5f, 0.3245f, 0.6f, 0.5f, 0.68f, -0.3f};
+	private final Float xv[] = {0.5f, 0.3245f, 0.6f, 0.5f, 0.68f, -0.3f};
 	private final float yv[] = {0.8f, 1.0f, 0.0f, 0.2f, 0.2f, 0.0f};
 	//private final float colour[] = {0.05f, 0.14f, 0.05f, 0.50f};
 	private final float colour[] = {0.6f, 0.16f, 0.2f, 0.50f};
@@ -155,7 +157,7 @@ public class Recognizer {
 		float dxval = velocity.v[0];
 		float dyval = velocity.v[0];
 		
-		float phi = (float)Math.acos(dxval / FloatMath.sqrt(dxval * dxval + dyval * dyval));
+		float phi = (float)Math.acos(dxval / Math.sqrt(dxval * dxval + dyval * dyval));
 		
 		if(dyval < 0.0f)
 			phi = (float)(2.0f * Math.PI - phi);
@@ -186,22 +188,22 @@ public class Recognizer {
 	
 	private float getx()
 	{
-		return (xv[0] * FloatMath.sin(xv[1] * mAlpha + xv[2]) - xv[3] * FloatMath.sin(xv[4] * mAlpha + xv[5]));
+		return (9);
 	}
 	
 	private float gety()
 	{
-		return (yv[0] * FloatMath.cos(yv[1] * mAlpha + yv[2] - yv[3] * FloatMath.sin(yv[4] * mAlpha + yv[5])));
+		return (9);//return (yv[0] * Math.cos(yv[1] * mAlpha + yv[2] - yv[3] * Math.sin(yv[4] * mAlpha + yv[5])));
 	}
 	
 	private float getdx()
 	{
-		return (xv[1] * xv[0] * FloatMath.cos(xv[1] * mAlpha + xv[2]) - xv[4] * xv[3] * FloatMath.cos(xv[4] * mAlpha + xv[5]));
+	return (9);//	return (xv[1] * xv[0] * Math.cos(xv[1] * mAlpha + xv[2]) - xv[4] * xv[3] * Math.cos(xv[4] * mAlpha + xv[5]));
 	}
 	
 	private float getdy()
 	{
-		return -(yv[1] * yv[0] * FloatMath.sin(yv[1] * mAlpha + yv[2]) - yv[4] * yv[3] * FloatMath.sin(yv[4] * mAlpha + yv[5]));
+		return (9);//return -(yv[1] * yv[0] * Math.sin(yv[1] * mAlpha + yv[2]) - yv[4] * yv[3] * Math.sin(yv[4] * mAlpha + yv[5]));
 	}
 	
 }
